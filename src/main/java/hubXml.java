@@ -15,8 +15,9 @@ import org.jsoup.select.Elements;
 public class hubXml {
 
     public static final String USER_AGENT = "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/45.0.2454.101 Safari/537.36";
-    public static final String ROOT_URL = "https://coolwebsitedotcom.wordpress.com";
-    public static final String[] Posts = {"https://coolwebsitedotcom.wordpress.com/2018/07/02/blog-post-1/", "https://coolwebsitedotcom.wordpress.com/2018/07/02/blog-post-2/", "https://coolwebsitedotcom.wordpress.com/2018/07/02/blog-post-3/"};
+    public static final String ROOT_URL = "https://www.awesomeblog.com";
+    public static final String[] POSTS = {"https://www.awesomeblog.com/awesome-post-1", "https://www.awesomeblog.com/awesome-post-2", "https://www.awesomeblog.com/awesome-post-3"};
+    // TODO FIGURED OUT HOW TO FIND POST URLS
 
     public static void main(String[] args) {
 
@@ -39,21 +40,21 @@ public class hubXml {
         Element rootLink = new Element("link").setText(ROOT_URL);
         channel.addContent(rootLink);
 
-        for(int i=0; i< Posts.length; i++) {
+        for(int i=0; i< POSTS.length; i++) {
 
             try {
                 // Fetch the page
-                org.jsoup.nodes.Document doc = Jsoup.connect(Posts[i]).userAgent(USER_AGENT).get();
+                org.jsoup.nodes.Document doc = Jsoup.connect(POSTS[i]).userAgent(USER_AGENT).get();
 
+                // Soups you likely do not need to touch
                 String title = doc.title();
-
                 String metaD = doc.select("meta[name=description]").get(0).attr("content");
 
+                // Soups you likely need to touch
                 String author = doc.select("a[rel=author]").get(0).text();
-
                 Elements tags = doc.select("a[rel=category tag]");
-
                 String postBody = doc.select(".entry-content").get(0).toString();
+                // TODO FIGURE OUT HOW TO GRAB PUBLISH DATE WELL
 
                 // Build XML item
                 // Build <item>
@@ -63,7 +64,7 @@ public class hubXml {
                 item.addContent(new Element("title").setText(title));
 
                 // Build <link>
-                item.addContent(new Element("link").setText(Posts[i]));
+                item.addContent(new Element("link").setText(POSTS[i]));
 
                 // Build <pubDate>
                 item.addContent(new Element("pubDate").setText("Wed, 25 Apr 2018 13:19:35 +0000"));
@@ -154,7 +155,7 @@ public class hubXml {
 //<?xml version='1.0' encoding='UTF-8'?>
 //<rss>
 //  <channel>
-//    <link>https://coolwebsitedotcom.wordpress.com</link>
+//    <link>https://www.awesomeblog.com</link>
 //    <wp:author>
 //      <wp:author_display_name><![CDATA[author]]></wp:author_display_name>
 //      <wp:author_login><![CDATA[author]]></wp:author_login>
@@ -162,13 +163,13 @@ public class hubXml {
 //    <item>
 //      <title>Post Title</title>
 //      <pubDate>Wed, 25 Apr 2018 13:19:35 +0000</pubDate>
-//      <link>www.link.com</link>
+//      <link>https://www.awesomeblog.com/awesome-post</link>
 //      <wp:post_id>1</wp:post_id>
 //      <wp:status>publish</wp:status>
 //      <wp:post_type>post</wp:post_type>
 //      <dc:creator>Author</dc:creator>
 //      <category domain="category" nicename="This-is-a-tag"><![CDATA[This is a tag]]></category>
-//      <excerpt:encoded>This is the meta description of my awesome post!</excerpt:encoded>
+//      <excerpt:encoded><![CDATA[This is the meta description of my awesome post!]]></excerpt:encoded>
 //      <content:encoded><![CDATA[<div>This is the post body</div>]]></content:encoded>
 //    </item>
 //    ...
