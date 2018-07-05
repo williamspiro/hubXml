@@ -80,5 +80,5 @@ XML setup which happens on its own:
 There is some dummy `ROOT_URL` and `POSTS` in the hubXml.java file, if you want to see it in action, try:
 ```
 public static final String ROOT_URL = "https://coolwebsitedotcom.wordpress.com";
-public static final String[] Posts = {"https://coolwebsitedotcom.wordpress.com/2018/07/02/blog-post-1/", "https://coolwebsitedotcom.wordpress.com/2018/07/02/blog-post-2/", "https://coolwebsitedotcom.wordpress.com/2018/07/02/blog-post-3/"};
+public static final String[] POSTS = {"https://coolwebsitedotcom.wordpress.com/2018/07/02/blog-post-1/", "https://coolwebsitedotcom.wordpress.com/2018/07/02/blog-post-2/", "https://coolwebsitedotcom.wordpress.com/2018/07/02/blog-post-3/"};
 ```
