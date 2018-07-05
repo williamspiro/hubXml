@@ -50,7 +50,7 @@ Requires manually setting a few variables and soup selectors to make sure we can
 ```
 <div class="entry-content">This is the post body</div>
 >>>>>
-<content:encoded><![CDATA[This is the post body]]</content:encoded><
+<content:encoded><![CDATA[This is the post body]]</content:encoded>
 ```
 TODO Figure out publish date
 
