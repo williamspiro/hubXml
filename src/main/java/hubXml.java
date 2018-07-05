@@ -15,9 +15,18 @@ import org.jsoup.select.Elements;
 public class hubXml {
 
     public static final String USER_AGENT = "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/45.0.2454.101 Safari/537.36";
-    public static final String ROOT_URL = "https://www.awesomeblog.com";
-    public static final String[] POSTS = {"https://www.awesomeblog.com/awesome-post-1", "https://www.awesomeblog.com/awesome-post-2", "https://www.awesomeblog.com/awesome-post-3"};
-    // TODO FIGURED OUT HOW TO FIND POST URLS
+
+    // :)
+    // VARIABLES TO SET
+    // :)
+    public static final String ROOT_URL = "https://coolwebsitedotcom.wordpress.com";
+    public static final String[] POSTS = {"https://coolwebsitedotcom.wordpress.com/2018/07/02/blog-post-1/", "https://coolwebsitedotcom.wordpress.com/2018/07/02/blog-post-2/", "https://coolwebsitedotcom.wordpress.com/2018/07/02/blog-post-3/"};
+    public static final String TITLE_SELECTOR = "title";
+    public static final String META_DESCRIPTION_SELECTOR = "meta[name=description]";
+    public static final String AUTHOR_SELECTOR = "a[rel=author]";
+    public static final String TAGS_SELECTOR = "a[rel=category tag]";
+    public static final String POST_BODY_SELECTOR = ".entry-content";
+    // TODO FIGURE OUT HOW TO FIND POST URLS
 
     public static void main(String[] args) {
 
@@ -46,27 +55,20 @@ public class hubXml {
                 // Fetch the page
                 org.jsoup.nodes.Document doc = Jsoup.connect(POSTS[i]).userAgent(USER_AGENT).get();
 
-                // Soups you likely do not need to touch
-                String title = doc.title();
-                String metaD = doc.select("meta[name=description]").get(0).attr("content");
-
-                // Soups you likely need to touch
-                String author = doc.select("a[rel=author]").get(0).text();
-                Elements tags = doc.select("a[rel=category tag]");
-                String postBody = doc.select(".entry-content").get(0).toString();
-                // TODO FIGURE OUT HOW TO GRAB PUBLISH DATE WELL
-
-                // Build XML item
                 // Build <item>
                 Element item = new Element("item");
 
                 // Build <title>
-                item.addContent(new Element("title").setText(title));
+                Elements title = doc.select(TITLE_SELECTOR);
+                if (!title.isEmpty()) {
+                    item.addContent(new Element("title").setText(title.get(0).text()));
+                }
 
                 // Build <link>
                 item.addContent(new Element("link").setText(POSTS[i]));
 
                 // Build <pubDate>
+                // TODO FIGURE OUT HOW TO GRAB PUBLISH DATE WELL
                 item.addContent(new Element("pubDate").setText("Wed, 25 Apr 2018 13:19:35 +0000"));
 
                 // Build <wp:postIid>
@@ -86,45 +88,57 @@ public class hubXml {
                 item.addContent(wpPostType);
 
                 // Build <excerpt:encoded>
-                Element excerptEncoded = new Element("encoded", ee);
-                CDATA excerptEncodedCdata = new CDATA(metaD);
-                excerptEncoded.setContent(excerptEncodedCdata);
-                item.addContent(excerptEncoded);
+                Elements metaD = doc.select(META_DESCRIPTION_SELECTOR);
+                if (!metaD.isEmpty()) {
+                    Element excerptEncoded = new Element("encoded", ee);
+                    CDATA excerptEncodedCdata = new CDATA(metaD.get(0).attr("content"));
+                    excerptEncoded.setContent(excerptEncodedCdata);
+                    item.addContent(excerptEncoded);
+                }
 
                 // Build <dc:creator>
-                Element dcCreator = new Element("creator", dc);
-                dcCreator.setText(author);
-                item.addContent(dcCreator);
-                // Build <wp:author>
-                if (!authorList.contains(author)) {
-                    authorList.add(author);
-                    Element wpAuthor = new Element("author", wp);
-                    channel.addContent(wpAuthor);
-                    CDATA wpAuthorDisplayNameCdata = new CDATA(author);
-                    CDATA wpAuthorloginCdata = new CDATA(author);
-                    Element wpAuthorDisplayName = new Element("author_display_name", wp).addContent(wpAuthorDisplayNameCdata);
-                    Element wpAuthorlogin = new Element("author_login", wp).addContent(wpAuthorloginCdata);
-                    wpAuthor.addContent(wpAuthorDisplayName);
-                    wpAuthor.addContent(wpAuthorlogin);
+                Elements authorElement = doc.select(AUTHOR_SELECTOR);
+                if (!authorElement.isEmpty()) {
+                    String author = authorElement.get(0).text();
+                    Element dcCreator = new Element("creator", dc);
+                    dcCreator.setText(author);
+                    item.addContent(dcCreator);
+                    // Build <wp:author>
+                    if (!authorList.contains(author)) {
+                        authorList.add(author);
+                        Element wpAuthor = new Element("author", wp);
+                        channel.addContent(wpAuthor);
+                        CDATA wpAuthorDisplayNameCdata = new CDATA(author);
+                        CDATA wpAuthorloginCdata = new CDATA(author);
+                        Element wpAuthorDisplayName = new Element("author_display_name", wp).addContent(wpAuthorDisplayNameCdata);
+                        Element wpAuthorlogin = new Element("author_login", wp).addContent(wpAuthorloginCdata);
+                        wpAuthor.addContent(wpAuthorDisplayName);
+                        wpAuthor.addContent(wpAuthorlogin);
+                    }
                 }
 
                 // Build <category>(s)
-                for (org.jsoup.nodes.Element tag : tags) {
-                    Element category = new Element("category").setText(tag.ownText());
-                    category.setAttribute("domain", "category");
-                    category.setAttribute("nicename", tag.ownText().replace(" ", "-"));
-                    item.addContent(category);
+                Elements tags = doc.select(TAGS_SELECTOR);
+                if (!tags.isEmpty()) {
+                    for (org.jsoup.nodes.Element tag : tags) {
+                        Element category = new Element("category").setText(tag.ownText());
+                        category.setAttribute("domain", "category");
+                        category.setAttribute("nicename", tag.ownText().replace(" ", "-"));
+                        item.addContent(category);
+                    }
                 }
 
                 // Build <content:encoded>
-                Element contentEncoded = new Element("encoded", ce);
-                CDATA contentEncodedCdata = new CDATA(postBody);
-                contentEncoded.setContent(contentEncodedCdata);
-                item.addContent(contentEncoded);
+                Elements postBody = doc.select(POST_BODY_SELECTOR);
+                if (!postBody.isEmpty()) {
+                    Element contentEncoded = new Element("encoded", ce);
+                    CDATA contentEncodedCdata = new CDATA(postBody.get(0).toString());
+                    contentEncoded.setContent(contentEncodedCdata);
+                    item.addContent(contentEncoded);
+                }
 
                 // Add Built <item> to list items
                 items.add(item);
-
 
             } catch(Exception e) {
                 System.out.println("ERROR I just spent a day at the beach mate... " + e.getMessage());
