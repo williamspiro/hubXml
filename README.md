@@ -1,7 +1,7 @@
 # hubXml
 A tool to turn any externally hosted blog into a HubSpot importable XML file. This is a Java port of [externalBlawgDawg.py](https://github.com/williamspiro/blawgDawg/blob/master/externalBlawgDawg.py).
 
-## hubXmlJava/src/main/java/hubXml.java
+## hubXml/src/main/java/hubXml.java
 _USAGE_  
 Requires manually setting a few variables and soup selectors to make sure we can scrub external content, and get all the content and data we need to import a blog into HubSpot. It will grab post titles, urls, meta descriptions, authors, tags and post bodies, and turn them all into importable `<items>`  
 
