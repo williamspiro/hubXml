@@ -19,14 +19,15 @@ public class hubXml {
     // :)
     // VARIABLES TO SET
     // :)
-    public static final String ROOT_URL = "https://coolwebsitedotcom.wordpress.com";
-    public static final String[] POSTS = {"https://coolwebsitedotcom.wordpress.com/2018/07/02/blog-post-1/", "https://coolwebsitedotcom.wordpress.com/2018/07/02/blog-post-2/", "https://coolwebsitedotcom.wordpress.com/2018/07/02/blog-post-3/"};
+    public static final String ROOT_URL = "https://www.awesomeblog.com";
+    public static final String[] POSTS = {"https://www.awesomeblog.com/awesome-post-1", "https://www.awesomeblog.com/awesome-post-2", "https://www.awesomeblog.com/awesome-post-3"};
     public static final String TITLE_SELECTOR = "title";
     public static final String META_DESCRIPTION_SELECTOR = "meta[name=description]";
     public static final String AUTHOR_SELECTOR = "a[rel=author]";
     public static final String TAGS_SELECTOR = "a[rel=category tag]";
     public static final String POST_BODY_SELECTOR = ".entry-content";
     // TODO FIGURE OUT HOW TO FIND POST URLS
+    // TODO FIGURE OUT HOW TO FIND PUBLISH DATE
 
     public static void main(String[] args) {
 
@@ -68,7 +69,6 @@ public class hubXml {
                 item.addContent(new Element("link").setText(POSTS[i]));
 
                 // Build <pubDate>
-                // TODO FIGURE OUT HOW TO GRAB PUBLISH DATE WELL
                 item.addContent(new Element("pubDate").setText("Wed, 25 Apr 2018 13:19:35 +0000"));
 
                 // Build <wp:postIid>
