@@ -6,8 +6,8 @@ _USAGE_
 Requires manually setting a few variables and soup selectors to make sure we can scrub external content, and get all the content and data we need to import a blog into HubSpot. It will grab post titles, urls, meta descriptions, authors, tags and post bodies, and turn them all into importable `<items>`  
 
 ### __variables & soup selectors to set__
-`ROOT_URL` - The root url of the external blog you want to turn into an xml file  
-`POSTS` - An array of external blog posts to turn into <item>(s) in the output xml file
+`public static final String ROOT_URL` - The root url of the external blog you want to turn into an xml file  
+`public static final String[] POSTS` - An array of external blog posts to turn into <item>(s) in the output xml file
 ```
 [html from scrubbed post]
 >>>>>
