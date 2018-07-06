@@ -1,9 +1,9 @@
 # hubXml
-A tool to turn any externally hosted blog into a HubSpot importable XML file. This is a Java port of [externalBlawgDawg.py](https://github.com/williamspiro/blawgDawg/blob/master/externalBlawgDawg.py).
+A tool to turn any externally hosted blog into a HubSpot importable XML file :tada: It will grab post titles, meta descriptions, authors, tags, featured images and post bodies, and turn them all into importable `<items>`, building a HubSpot importable XML file. Plain and simple, this allows you to __import any external blog into HubSpot__, not just Wordpress blogs.
 
 ## hubXml/src/main/java/hubXml.java
 _USAGE_  
-Requires manually setting a few variables in `hubXmlVariables.java` and soup selectors to make sure we can scrub external content, and get all the content and data we need to import a blog into HubSpot. It will grab post titles, urls, meta descriptions, authors, tags and post bodies, and turn them all into importable `<items>`. Running will output a blog.xml file which can be imported into HubSpot using the Blog Importer.    
+Requires manually setting a few variables in `hubXmlVariables.java` and soup selectors to make sure we can scrub external content, and get all the content and data we need to import a blog into HubSpot. Running will output a blog.xml file which can be imported into HubSpot using the Blog Importer.    
 
 ### __variables & soup selectors to set in hubXml/src/main/java/hubXmlVariables.java__
 `public static final String ROOT_URL` - The root url of the external blog you want to turn into an xml file  
@@ -95,7 +95,7 @@ XML setup which happens on its own:
     </channel>
 </rss>
 ```
-__Example final output :tada::rocket::dancers:__
+__Example final output :tada:__
 ```
 <?xml version="1.0" encoding="UTF-8"?>
 <rss xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:excerpt="http://wordpress.org/export/1.2/excerpt/" xmlns:wp="http://wordpress.org/export/1.2/">
