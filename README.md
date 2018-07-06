@@ -8,7 +8,7 @@ Requires manually setting a few variables and soup selectors to make sure we can
 ### __variables & soup selectors to set__
 `private static final String ROOT_URL` - The root url of the external blog you want to turn into an xml file  
 `private static final String[] POSTS` - An array of external blog posts to turn into <item>(s) in the output xml file  
-Below, find the soup selectors which you need to set as CSS selectors for the elements to find, which contain a variable to set, and an example of the html --> XML conversion::
+Below, find the _soup_ selectors which you need to set as CSS selectors for the elements to find. Included are examples of the html element selected --> XML conversion:
 ```
 [html from scrubbed post]
 >>>>>
