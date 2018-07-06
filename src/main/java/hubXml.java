@@ -26,6 +26,9 @@ public class hubXml {
     public static final String AUTHOR_SELECTOR = "a[rel=author]";
     public static final String TAGS_SELECTOR = "a[rel=category tag]";
     public static final String POST_BODY_SELECTOR = ".entry-content";
+    // :)
+    // END VARIABLES TO SET
+    // :)
     // TODO FIGURE OUT HOW TO FIND POST URLS
     // TODO FIGURE OUT HOW TO FIND PUBLISH DATE
 
@@ -39,8 +42,7 @@ public class hubXml {
     public static Document document = new Document();
     public static Element rss = new Element("rss");
     public static Element channel = new Element("channel");
-    public static Element rootLink = new Element("link").setText(ROOT_URL);
-
+    public static Element rootLink = new Element("link");
 
     public static void buildWpAuthor(String author) {
 
@@ -64,6 +66,7 @@ public class hubXml {
         rss.addNamespaceDeclaration(dc);
         rss.addContent(channel);
         channel.addContent(rootLink);
+        rootLink.setText(ROOT_URL);
 
         for(int i=0; i< POSTS.length; i++) {
 
