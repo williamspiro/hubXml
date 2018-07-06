@@ -26,29 +26,47 @@ public class hubXml {
     public static final String AUTHOR_SELECTOR = "a[rel=author]";
     public static final String TAGS_SELECTOR = "a[rel=category tag]";
     public static final String POST_BODY_SELECTOR = ".entry-content";
+    // :)
+    // END VARIABLES TO SET
+    // :)
     // TODO FIGURE OUT HOW TO FIND POST URLS
     // TODO FIGURE OUT HOW TO FIND PUBLISH DATE
 
+    // XML Setup
+    public static Namespace ce = Namespace.getNamespace("content", "http://purl.org/rss/1.0/modules/content/");
+    public static Namespace ee = Namespace.getNamespace("excerpt", "http://wordpress.org/export/1.2/excerpt/");
+    public static Namespace wp = Namespace.getNamespace("wp", "http://wordpress.org/export/1.2/");
+    public static Namespace dc = Namespace.getNamespace("dc", "http://purl.org/dc/elements/1.1/");
+    public static ArrayList<String> authorList = new ArrayList<String>();
+    public static List items = new ArrayList();
+    public static Document document = new Document();
+    public static Element rss = new Element("rss");
+    public static Element channel = new Element("channel");
+    public static Element rootLink = new Element("link");
+
+    public static void buildWpAuthor(String author) {
+
+        authorList.add(author);
+        Element wpAuthor = new Element("author", wp);
+        channel.addContent(wpAuthor);
+        CDATA wpAuthorDisplayNameCdata = new CDATA(author);
+        CDATA wpAuthorloginCdata = new CDATA(author);
+        Element wpAuthorDisplayName = new Element("author_display_name", wp).addContent(wpAuthorDisplayNameCdata);
+        Element wpAuthorlogin = new Element("author_login", wp).addContent(wpAuthorloginCdata);
+        wpAuthor.addContent(wpAuthorDisplayName);
+        wpAuthor.addContent(wpAuthorlogin);
+
+    }
+
     public static void main(String[] args) {
 
-        // XML Setup
-        Namespace ce = Namespace.getNamespace("content", "http://purl.org/rss/1.0/modules/content/");
-        Namespace ee = Namespace.getNamespace("excerpt", "http://wordpress.org/export/1.2/excerpt/");
-        Namespace wp = Namespace.getNamespace("wp", "http://wordpress.org/export/1.2/");
-        Namespace dc = Namespace.getNamespace("dc", "http://purl.org/dc/elements/1.1/");
-        ArrayList<String> authorList = new ArrayList<String>();
-        List items = new ArrayList();
-
-        Document document = new Document();
-        Element rss = new Element("rss");
-        Element channel = new Element("channel");
-        rss.addContent(channel);
         rss.addNamespaceDeclaration(ce);
         rss.addNamespaceDeclaration(ee);
         rss.addNamespaceDeclaration(wp);
         rss.addNamespaceDeclaration(dc);
-        Element rootLink = new Element("link").setText(ROOT_URL);
+        rss.addContent(channel);
         channel.addContent(rootLink);
+        rootLink.setText(ROOT_URL);
 
         for(int i=0; i< POSTS.length; i++) {
 
@@ -105,15 +123,7 @@ public class hubXml {
                     item.addContent(dcCreator);
                     // Build <wp:author>
                     if (!authorList.contains(author)) {
-                        authorList.add(author);
-                        Element wpAuthor = new Element("author", wp);
-                        channel.addContent(wpAuthor);
-                        CDATA wpAuthorDisplayNameCdata = new CDATA(author);
-                        CDATA wpAuthorloginCdata = new CDATA(author);
-                        Element wpAuthorDisplayName = new Element("author_display_name", wp).addContent(wpAuthorDisplayNameCdata);
-                        Element wpAuthorlogin = new Element("author_login", wp).addContent(wpAuthorloginCdata);
-                        wpAuthor.addContent(wpAuthorDisplayName);
-                        wpAuthor.addContent(wpAuthorlogin);
+                        buildWpAuthor(author);
                     }
                 }
 
