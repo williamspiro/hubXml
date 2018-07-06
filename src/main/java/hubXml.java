@@ -51,6 +51,7 @@ public class hubXml {
 
         Element featuredItem = new Element("item");
         featuredItem.addContent(new Element("title").setText(post));
+        featuredItem.addContent(new Element("link").setText(featuredImageUri.split("[?]")[0]));
         featuredItem.addContent(new Element("post_id", wp).setText(String.valueOf(id + 4000)));
         featuredItem.addContent(new Element("post_parent", wp).setText(String.valueOf(id + 1)));
         featuredItem.addContent(new Element("post_type", wp).setText("attachment"));
@@ -143,7 +144,7 @@ public class hubXml {
             Elements featuredImage = doc.select(hubXmlVariables.FEATURED_IMAGE_SELECTOR);
             if (!featuredImage.isEmpty()) {
                 String featuredImageUri = featuredImage.get(0).attr("src");
-                Element postMeta = new Element ("postMeta", wp);
+                Element postMeta = new Element ("post_meta", wp);
                 item.addContent(postMeta);
                 postMeta.addContent(new Element ("meta_key", wp).setText("_thumbnail_id"));
                 Element metaValue = new Element ("meta_value", wp);
