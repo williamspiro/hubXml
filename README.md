@@ -77,7 +77,7 @@ XML setup which happens on its own:
     <channel>
         <link>!!~~blog root url link from ROOT_URL variable~~!!</link>
         <
-            !!<wp:author>s build here!!
+            !!~~<wp:author>s build here~~!!
         >
         <
             !!~~featured images <item>s build here~~!!
