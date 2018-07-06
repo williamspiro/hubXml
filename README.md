@@ -1,5 +1,5 @@
 # hubXml
-A tool to turn any externally hosted blog into a HubSpot importable XML file :tada: It will grab post titles, meta descriptions, authors, tags, featured images and post bodies, and turn them all into importable `<items>`, building a HubSpot importable XML file. Plain and simple, this allows you to __import any external blog into HubSpot__, not just Wordpress blogs.
+A tool to turn any externally hosted blog into a HubSpot importable XML file. It will grab post titles, meta descriptions, authors, tags, featured images and post bodies, and turn them all into importable `<items>`, building a HubSpot importable XML file. Plain and simple, this allows you to __import any external blog into HubSpot__, not just Wordpress blogs :tada:
 
 ## hubXml/src/main/java/hubXml.java
 _USAGE_  
