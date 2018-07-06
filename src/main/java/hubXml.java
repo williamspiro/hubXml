@@ -27,6 +27,7 @@ public class hubXml {
     private static Namespace dc = Namespace.getNamespace("dc", "http://purl.org/dc/elements/1.1/");
     private static ArrayList<String> authorList = new ArrayList<String>();
     private static List items = new ArrayList();
+    private static List featuredItems = new ArrayList();
     private static Document document = new Document();
     private static Element rss = new Element("rss");
     private static Element channel = new Element("channel");
@@ -43,6 +44,18 @@ public class hubXml {
         Element wpAuthorlogin = new Element("author_login", wp).addContent(wpAuthorloginCdata);
         wpAuthor.addContent(wpAuthorDisplayName);
         wpAuthor.addContent(wpAuthorlogin);
+
+    }
+
+    private static void buildFeaturedImage(String post, String featuredImageUri, Integer id) {
+
+        Element featuredItem = new Element("item");
+        featuredItem.addContent(new Element("title").setText(post));
+        featuredItem.addContent(new Element("post_id", wp).setText(String.valueOf(id + 4000)));
+        featuredItem.addContent(new Element("post_parent", wp).setText(String.valueOf(id + 1)));
+        featuredItem.addContent(new Element("post_type", wp).setText("attachment"));
+        featuredItem.addContent(new Element("attachment_url", wp).setText(featuredImageUri.split("[?]")[0]));
+        featuredItems.add(featuredItem);
 
     }
 
@@ -126,6 +139,21 @@ public class hubXml {
                 item.addContent(contentEncoded);
             }
 
+            // Build <wp:postmeta> for featured image
+            Elements featuredImage = doc.select(hubXmlVariables.FEATURED_IMAGE_SELECTOR);
+            if (!featuredImage.isEmpty()) {
+                String featuredImageUri = featuredImage.get(0).attr("src");
+                Element postMeta = new Element ("postMeta", wp);
+                item.addContent(postMeta);
+                postMeta.addContent(new Element ("meta_key", wp).setText("_thumbnail_id"));
+                Element metaValue = new Element ("meta_value", wp);
+                CDATA metaValueCdata = new CDATA(String.valueOf(id + 4000));
+                metaValue.addContent(metaValueCdata);
+                postMeta.addContent(metaValue);
+                // Build <item> for featured image
+                buildFeaturedImage(post, featuredImageUri, id);
+            }
+
             // Add Built <item> to list items
             items.add(item);
 
@@ -155,6 +183,7 @@ public class hubXml {
         }
 
         // Finally add <item>(s) to <channel> to ensure <wp:authors> are on top
+        channel.addContent(featuredItems);
         channel.addContent(items);
         document.setContent(rss);
 
@@ -175,28 +204,3 @@ public class hubXml {
     }
 
 }
-
-// DESIRED XML OUTPUT
-//<?xml version='1.0' encoding='UTF-8'?>
-//<rss>
-//  <channel>
-//    <link>https://www.awesomeblog.com</link>
-//    <wp:author>
-//      <wp:author_display_name><![CDATA[author]]></wp:author_display_name>
-//      <wp:author_login><![CDATA[author]]></wp:author_login>
-//    </wp:author>
-//    <item>
-//      <title>Post Title</title>
-//      <pubDate>Wed, 25 Apr 2018 13:19:35 +0000</pubDate>
-//      <link>https://www.awesomeblog.com/awesome-post</link>
-//      <wp:post_id>1</wp:post_id>
-//      <wp:status>publish</wp:status>
-//      <wp:post_type>post</wp:post_type>
-//      <dc:creator>Author</dc:creator>
-//      <category domain="category" nicename="This-is-a-tag"><![CDATA[This is a tag]]></category>
-//      <excerpt:encoded><![CDATA[This is the meta description of my awesome post!]]></excerpt:encoded>
-//      <content:encoded><![CDATA[<div>This is the post body</div>]]></content:encoded>
-//    </item>
-//    ...
-//  </channel>
-//</rss>
