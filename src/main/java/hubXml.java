@@ -12,25 +12,13 @@ import java.util.List;
 import org.jsoup.Jsoup;
 import org.jsoup.select.Elements;
 
+// :)
+// VARIABLES ARE SET IN hubXmlVariables.java
+// :)
+
 public class hubXml {
 
     private static final String USER_AGENT = "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/45.0.2454.101 Safari/537.36";
-
-    // :)
-    // VARIABLES TO SET
-    // :)
-    private static final String ROOT_URL = "https://www.awesomeblog.com";
-    private static final String[] POSTS = {"https://www.awesomeblog.com/awesome-post-1", "https://www.awesomeblog.com/awesome-post-2", "https://www.awesomeblog.com/awesome-post-3"};
-    private static final String TITLE_SELECTOR = "title";
-    private static final String META_DESCRIPTION_SELECTOR = "meta[name=description]";
-    private static final String AUTHOR_SELECTOR = "a[rel=author]";
-    private static final String TAGS_SELECTOR = "a[rel=category tag]";
-    private static final String POST_BODY_SELECTOR = ".entry-content";
-    // :)
-    // END VARIABLES TO SET
-    // :)
-    // TODO FIGURE OUT HOW TO FIND POST URLS
-    // TODO FIGURE OUT HOW TO FIND PUBLISH DATE
 
     // XML Setup
     private static Namespace ce = Namespace.getNamespace("content", "http://purl.org/rss/1.0/modules/content/");
@@ -69,7 +57,7 @@ public class hubXml {
             Element item = new Element("item");
 
             // Build <title>
-            Elements title = doc.select(TITLE_SELECTOR);
+            Elements title = doc.select(hubXmlVariables.TITLE_SELECTOR);
             if (!title.isEmpty()) {
                 item.addContent(new Element("title").setText(title.get(0).text()));
             }
@@ -97,7 +85,7 @@ public class hubXml {
             item.addContent(wpPostType);
 
             // Build <excerpt:encoded>
-            Elements metaD = doc.select(META_DESCRIPTION_SELECTOR);
+            Elements metaD = doc.select(hubXmlVariables.META_DESCRIPTION_SELECTOR);
             if (!metaD.isEmpty()) {
                 Element excerptEncoded = new Element("encoded", ee);
                 CDATA excerptEncodedCdata = new CDATA(metaD.get(0).attr("content"));
@@ -106,7 +94,7 @@ public class hubXml {
             }
 
             // Build <dc:creator>
-            Elements authorElement = doc.select(AUTHOR_SELECTOR);
+            Elements authorElement = doc.select(hubXmlVariables.AUTHOR_SELECTOR);
             if (!authorElement.isEmpty()) {
                 String author = authorElement.get(0).text();
                 Element dcCreator = new Element("creator", dc);
@@ -119,7 +107,7 @@ public class hubXml {
             }
 
             // Build <category>(s)
-            Elements tags = doc.select(TAGS_SELECTOR);
+            Elements tags = doc.select(hubXmlVariables.TAGS_SELECTOR);
             if (!tags.isEmpty()) {
                 for (org.jsoup.nodes.Element tag : tags) {
                     Element category = new Element("category").setText(tag.ownText());
@@ -130,7 +118,7 @@ public class hubXml {
             }
 
             // Build <content:encoded>
-            Elements postBody = doc.select(POST_BODY_SELECTOR);
+            Elements postBody = doc.select(hubXmlVariables.POST_BODY_SELECTOR);
             if (!postBody.isEmpty()) {
                 Element contentEncoded = new Element("encoded", ce);
                 CDATA contentEncodedCdata = new CDATA(postBody.get(0).toString());
@@ -158,11 +146,11 @@ public class hubXml {
         rss.addNamespaceDeclaration(dc);
         rss.addContent(channel);
         channel.addContent(rootLink);
-        rootLink.setText(ROOT_URL);
+        rootLink.setText(hubXmlVariables.ROOT_URL);
 
-        for(int i=0; i< POSTS.length; i++) {
+        for(int i=0; i< hubXmlVariables.POSTS.length; i++) {
 
-            buildItem(POSTS[i], i);
+            buildItem(hubXmlVariables.POSTS[i], i);
 
         }
 
