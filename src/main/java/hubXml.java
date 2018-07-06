@@ -12,124 +12,145 @@ import java.util.List;
 import org.jsoup.Jsoup;
 import org.jsoup.select.Elements;
 
+// :)
+// VARIABLES ARE SET IN hubXmlVariables.java
+// :)
+
 public class hubXml {
 
-    public static final String USER_AGENT = "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/45.0.2454.101 Safari/537.36";
-    public static final String ROOT_URL = "https://www.awesomeblog.com";
-    public static final String[] POSTS = {"https://www.awesomeblog.com/awesome-post-1", "https://www.awesomeblog.com/awesome-post-2", "https://www.awesomeblog.com/awesome-post-3"};
-    // TODO FIGURED OUT HOW TO FIND POST URLS
+    private static final String USER_AGENT = "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/45.0.2454.101 Safari/537.36";
 
-    public static void main(String[] args) {
+    // XML Setup
+    private static Namespace ce = Namespace.getNamespace("content", "http://purl.org/rss/1.0/modules/content/");
+    private static Namespace ee = Namespace.getNamespace("excerpt", "http://wordpress.org/export/1.2/excerpt/");
+    private static Namespace wp = Namespace.getNamespace("wp", "http://wordpress.org/export/1.2/");
+    private static Namespace dc = Namespace.getNamespace("dc", "http://purl.org/dc/elements/1.1/");
+    private static ArrayList<String> authorList = new ArrayList<String>();
+    private static List items = new ArrayList();
+    private static Document document = new Document();
+    private static Element rss = new Element("rss");
+    private static Element channel = new Element("channel");
+    private static Element rootLink = new Element("link");
 
-        // XML Setup
-        Namespace ce = Namespace.getNamespace("content", "http://purl.org/rss/1.0/modules/content/");
-        Namespace ee = Namespace.getNamespace("excerpt", "http://wordpress.org/export/1.2/excerpt/");
-        Namespace wp = Namespace.getNamespace("wp", "http://wordpress.org/export/1.2/");
-        Namespace dc = Namespace.getNamespace("dc", "http://purl.org/dc/elements/1.1/");
-        ArrayList<String> authorList = new ArrayList<String>();
-        List items = new ArrayList();
+    private static void buildWpAuthor(String author) {
 
-        Document document = new Document();
-        Element rss = new Element("rss");
-        Element channel = new Element("channel");
-        rss.addContent(channel);
-        rss.addNamespaceDeclaration(ce);
-        rss.addNamespaceDeclaration(ee);
-        rss.addNamespaceDeclaration(wp);
-        rss.addNamespaceDeclaration(dc);
-        Element rootLink = new Element("link").setText(ROOT_URL);
-        channel.addContent(rootLink);
+        authorList.add(author);
+        Element wpAuthor = new Element("author", wp);
+        channel.addContent(wpAuthor);
+        CDATA wpAuthorDisplayNameCdata = new CDATA(author);
+        CDATA wpAuthorloginCdata = new CDATA(author);
+        Element wpAuthorDisplayName = new Element("author_display_name", wp).addContent(wpAuthorDisplayNameCdata);
+        Element wpAuthorlogin = new Element("author_login", wp).addContent(wpAuthorloginCdata);
+        wpAuthor.addContent(wpAuthorDisplayName);
+        wpAuthor.addContent(wpAuthorlogin);
 
-        for(int i=0; i< POSTS.length; i++) {
+    }
 
-            try {
-                // Fetch the page
-                org.jsoup.nodes.Document doc = Jsoup.connect(POSTS[i]).userAgent(USER_AGENT).get();
+    private static void buildItem(String post, Integer id) {
 
-                // Soups you likely do not need to touch
-                String title = doc.title();
-                String metaD = doc.select("meta[name=description]").get(0).attr("content");
+        try {
 
-                // Soups you likely need to touch
-                String author = doc.select("a[rel=author]").get(0).text();
-                Elements tags = doc.select("a[rel=category tag]");
-                String postBody = doc.select(".entry-content").get(0).toString();
-                // TODO FIGURE OUT HOW TO GRAB PUBLISH DATE WELL
+            // Fetch the page
+            org.jsoup.nodes.Document doc = Jsoup.connect(post).userAgent(USER_AGENT).get();
 
-                // Build XML item
-                // Build <item>
-                Element item = new Element("item");
+            // Build <item>
+            Element item = new Element("item");
 
-                // Build <title>
-                item.addContent(new Element("title").setText(title));
+            // Build <title>
+            Elements title = doc.select(hubXmlVariables.TITLE_SELECTOR);
+            if (!title.isEmpty()) {
+                item.addContent(new Element("title").setText(title.get(0).text()));
+            }
 
-                // Build <link>
-                item.addContent(new Element("link").setText(POSTS[i]));
+            // Build <link>
+            item.addContent(new Element("link").setText(post));
 
-                // Build <pubDate>
-                item.addContent(new Element("pubDate").setText("Wed, 25 Apr 2018 13:19:35 +0000"));
+            // Build <pubDate>
+            item.addContent(new Element("pubDate").setText("Wed, 25 Apr 2018 13:19:35 +0000"));
 
-                // Build <wp:postIid>
-                Element wpPostId = new Element("post_id", wp);
-                wpPostId.setText(String.valueOf(i + 1));
-                wpPostId.removeAttribute("wp");
-                item.addContent(wpPostId);
+            // Build <wp:postIid>
+            Element wpPostId = new Element("post_id", wp);
+            wpPostId.setText(String.valueOf(id + 1));
+            wpPostId.removeAttribute("wp");
+            item.addContent(wpPostId);
 
-                // Build <wp:status>
-                Element wpStatus = new Element("status", wp);
-                wpStatus.setText("publish");
-                item.addContent(wpStatus);
+            // Build <wp:status>
+            Element wpStatus = new Element("status", wp);
+            wpStatus.setText("publish");
+            item.addContent(wpStatus);
 
-                // Build <wp:post_type>
-                Element wpPostType = new Element("post_type", wp);
-                wpPostType.setText("post");
-                item.addContent(wpPostType);
+            // Build <wp:post_type>
+            Element wpPostType = new Element("post_type", wp);
+            wpPostType.setText("post");
+            item.addContent(wpPostType);
 
-                // Build <excerpt:encoded>
+            // Build <excerpt:encoded>
+            Elements metaD = doc.select(hubXmlVariables.META_DESCRIPTION_SELECTOR);
+            if (!metaD.isEmpty()) {
                 Element excerptEncoded = new Element("encoded", ee);
-                CDATA excerptEncodedCdata = new CDATA(metaD);
+                CDATA excerptEncodedCdata = new CDATA(metaD.get(0).attr("content"));
                 excerptEncoded.setContent(excerptEncodedCdata);
                 item.addContent(excerptEncoded);
+            }
 
-                // Build <dc:creator>
+            // Build <dc:creator>
+            Elements authorElement = doc.select(hubXmlVariables.AUTHOR_SELECTOR);
+            if (!authorElement.isEmpty()) {
+                String author = authorElement.get(0).text();
                 Element dcCreator = new Element("creator", dc);
                 dcCreator.setText(author);
                 item.addContent(dcCreator);
                 // Build <wp:author>
                 if (!authorList.contains(author)) {
-                    authorList.add(author);
-                    Element wpAuthor = new Element("author", wp);
-                    channel.addContent(wpAuthor);
-                    CDATA wpAuthorDisplayNameCdata = new CDATA(author);
-                    CDATA wpAuthorloginCdata = new CDATA(author);
-                    Element wpAuthorDisplayName = new Element("author_display_name", wp).addContent(wpAuthorDisplayNameCdata);
-                    Element wpAuthorlogin = new Element("author_login", wp).addContent(wpAuthorloginCdata);
-                    wpAuthor.addContent(wpAuthorDisplayName);
-                    wpAuthor.addContent(wpAuthorlogin);
+                    buildWpAuthor(author);
                 }
+            }
 
-                // Build <category>(s)
+            // Build <category>(s)
+            Elements tags = doc.select(hubXmlVariables.TAGS_SELECTOR);
+            if (!tags.isEmpty()) {
                 for (org.jsoup.nodes.Element tag : tags) {
                     Element category = new Element("category").setText(tag.ownText());
                     category.setAttribute("domain", "category");
                     category.setAttribute("nicename", tag.ownText().replace(" ", "-"));
                     item.addContent(category);
                 }
+            }
 
-                // Build <content:encoded>
+            // Build <content:encoded>
+            Elements postBody = doc.select(hubXmlVariables.POST_BODY_SELECTOR);
+            if (!postBody.isEmpty()) {
                 Element contentEncoded = new Element("encoded", ce);
-                CDATA contentEncodedCdata = new CDATA(postBody);
+                CDATA contentEncodedCdata = new CDATA(postBody.get(0).toString());
                 contentEncoded.setContent(contentEncodedCdata);
                 item.addContent(contentEncoded);
-
-                // Add Built <item> to list items
-                items.add(item);
-
-
-            } catch(Exception e) {
-                System.out.println("ERROR I just spent a day at the beach mate... " + e.getMessage());
-                e.printStackTrace();
             }
+
+            // Add Built <item> to list items
+            items.add(item);
+
+        }  catch(Exception e) {
+
+            System.out.println("ERROR I just spent a day at the beach mate... " + e.getMessage());
+            e.printStackTrace();
+
+        }
+
+    }
+
+    public static void main(String[] args) {
+
+        rss.addNamespaceDeclaration(ce);
+        rss.addNamespaceDeclaration(ee);
+        rss.addNamespaceDeclaration(wp);
+        rss.addNamespaceDeclaration(dc);
+        rss.addContent(channel);
+        channel.addContent(rootLink);
+        rootLink.setText(hubXmlVariables.ROOT_URL);
+
+        for(int i=0; i< hubXmlVariables.POSTS.length; i++) {
+
+            buildItem(hubXmlVariables.POSTS[i], i);
 
         }
 
@@ -138,13 +159,17 @@ public class hubXml {
         document.setContent(rss);
 
         try {
+
             FileWriter writer = new FileWriter("blog.xml");
             XMLOutputter outputter = new XMLOutputter();
             outputter.setFormat(Format.getPrettyFormat());
             outputter.output(document, writer);
             outputter.output(document, System.out);
+
         } catch (Exception e) {
+
             e.printStackTrace();
+
         }
 
     }
