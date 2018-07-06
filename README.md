@@ -62,6 +62,7 @@ Below, find the _soup_ selectors which you need to set as CSS selectors for the 
 &
 <item>
     <title>https://www.awesomeblog.com/awesome-post</title>
+    <link>https://www.awesomeblog.com/featured-image.jpg</link>
     <wp:post_id>2</wp:post_id>
     <wp:post_parent>1</wp:post_parent>
     <wp:post_type>attachment</wp:post_type>
@@ -94,7 +95,7 @@ XML setup which happens on its own:
     </channel>
 </rss>
 ```
-__Example final output :tada:__
+__Example final output :tada::rocket::dancers:__
 ```
 <?xml version="1.0" encoding="UTF-8"?>
 <rss xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:excerpt="http://wordpress.org/export/1.2/excerpt/" xmlns:wp="http://wordpress.org/export/1.2/">
@@ -106,6 +107,7 @@ __Example final output :tada:__
         </wp:author>
         <item>
             <title>https://www.awesomeblog.com/awesome-post</title>
+            <link>https://www.awesomeblog.com/featured-image.jpg</link>
             <wp:post_id>2</wp:post_id>
             <wp:post_parent>1</wp:post_parent>
             <wp:post_type>attachment</wp:post_type>
