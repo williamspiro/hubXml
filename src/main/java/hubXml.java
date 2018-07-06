@@ -14,18 +14,18 @@ import org.jsoup.select.Elements;
 
 public class hubXml {
 
-    public static final String USER_AGENT = "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/45.0.2454.101 Safari/537.36";
+    private static final String USER_AGENT = "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/45.0.2454.101 Safari/537.36";
 
     // :)
     // VARIABLES TO SET
     // :)
-    public static final String ROOT_URL = "https://www.awesomeblog.com";
-    public static final String[] POSTS = {"https://www.awesomeblog.com/awesome-post-1", "https://www.awesomeblog.com/awesome-post-2", "https://www.awesomeblog.com/awesome-post-3"};
-    public static final String TITLE_SELECTOR = "title";
-    public static final String META_DESCRIPTION_SELECTOR = "meta[name=description]";
-    public static final String AUTHOR_SELECTOR = "a[rel=author]";
-    public static final String TAGS_SELECTOR = "a[rel=category tag]";
-    public static final String POST_BODY_SELECTOR = ".entry-content";
+    private static final String ROOT_URL = "https://www.awesomeblog.com";
+    private static final String[] POSTS = {"https://www.awesomeblog.com/awesome-post-1", "https://www.awesomeblog.com/awesome-post-2", "https://www.awesomeblog.com/awesome-post-3"};
+    private static final String TITLE_SELECTOR = "title";
+    private static final String META_DESCRIPTION_SELECTOR = "meta[name=description]";
+    private static final String AUTHOR_SELECTOR = "a[rel=author]";
+    private static final String TAGS_SELECTOR = "a[rel=category tag]";
+    private static final String POST_BODY_SELECTOR = ".entry-content";
     // :)
     // END VARIABLES TO SET
     // :)
@@ -33,18 +33,18 @@ public class hubXml {
     // TODO FIGURE OUT HOW TO FIND PUBLISH DATE
 
     // XML Setup
-    public static Namespace ce = Namespace.getNamespace("content", "http://purl.org/rss/1.0/modules/content/");
-    public static Namespace ee = Namespace.getNamespace("excerpt", "http://wordpress.org/export/1.2/excerpt/");
-    public static Namespace wp = Namespace.getNamespace("wp", "http://wordpress.org/export/1.2/");
-    public static Namespace dc = Namespace.getNamespace("dc", "http://purl.org/dc/elements/1.1/");
-    public static ArrayList<String> authorList = new ArrayList<String>();
-    public static List items = new ArrayList();
-    public static Document document = new Document();
-    public static Element rss = new Element("rss");
-    public static Element channel = new Element("channel");
-    public static Element rootLink = new Element("link");
+    private static Namespace ce = Namespace.getNamespace("content", "http://purl.org/rss/1.0/modules/content/");
+    private static Namespace ee = Namespace.getNamespace("excerpt", "http://wordpress.org/export/1.2/excerpt/");
+    private static Namespace wp = Namespace.getNamespace("wp", "http://wordpress.org/export/1.2/");
+    private static Namespace dc = Namespace.getNamespace("dc", "http://purl.org/dc/elements/1.1/");
+    private static ArrayList<String> authorList = new ArrayList<String>();
+    private static List items = new ArrayList();
+    private static Document document = new Document();
+    private static Element rss = new Element("rss");
+    private static Element channel = new Element("channel");
+    private static Element rootLink = new Element("link");
 
-    public static void buildWpAuthor(String author) {
+    private static void buildWpAuthor(String author) {
 
         authorList.add(author);
         Element wpAuthor = new Element("author", wp);
@@ -55,6 +55,98 @@ public class hubXml {
         Element wpAuthorlogin = new Element("author_login", wp).addContent(wpAuthorloginCdata);
         wpAuthor.addContent(wpAuthorDisplayName);
         wpAuthor.addContent(wpAuthorlogin);
+
+    }
+
+    private static void buildItem(String post, Integer id) {
+
+        try {
+
+            // Fetch the page
+            org.jsoup.nodes.Document doc = Jsoup.connect(post).userAgent(USER_AGENT).get();
+
+            // Build <item>
+            Element item = new Element("item");
+
+            // Build <title>
+            Elements title = doc.select(TITLE_SELECTOR);
+            if (!title.isEmpty()) {
+                item.addContent(new Element("title").setText(title.get(0).text()));
+            }
+
+            // Build <link>
+            item.addContent(new Element("link").setText(post));
+
+            // Build <pubDate>
+            item.addContent(new Element("pubDate").setText("Wed, 25 Apr 2018 13:19:35 +0000"));
+
+            // Build <wp:postIid>
+            Element wpPostId = new Element("post_id", wp);
+            wpPostId.setText(String.valueOf(id + 1));
+            wpPostId.removeAttribute("wp");
+            item.addContent(wpPostId);
+
+            // Build <wp:status>
+            Element wpStatus = new Element("status", wp);
+            wpStatus.setText("publish");
+            item.addContent(wpStatus);
+
+            // Build <wp:post_type>
+            Element wpPostType = new Element("post_type", wp);
+            wpPostType.setText("post");
+            item.addContent(wpPostType);
+
+            // Build <excerpt:encoded>
+            Elements metaD = doc.select(META_DESCRIPTION_SELECTOR);
+            if (!metaD.isEmpty()) {
+                Element excerptEncoded = new Element("encoded", ee);
+                CDATA excerptEncodedCdata = new CDATA(metaD.get(0).attr("content"));
+                excerptEncoded.setContent(excerptEncodedCdata);
+                item.addContent(excerptEncoded);
+            }
+
+            // Build <dc:creator>
+            Elements authorElement = doc.select(AUTHOR_SELECTOR);
+            if (!authorElement.isEmpty()) {
+                String author = authorElement.get(0).text();
+                Element dcCreator = new Element("creator", dc);
+                dcCreator.setText(author);
+                item.addContent(dcCreator);
+                // Build <wp:author>
+                if (!authorList.contains(author)) {
+                    buildWpAuthor(author);
+                }
+            }
+
+            // Build <category>(s)
+            Elements tags = doc.select(TAGS_SELECTOR);
+            if (!tags.isEmpty()) {
+                for (org.jsoup.nodes.Element tag : tags) {
+                    Element category = new Element("category").setText(tag.ownText());
+                    category.setAttribute("domain", "category");
+                    category.setAttribute("nicename", tag.ownText().replace(" ", "-"));
+                    item.addContent(category);
+                }
+            }
+
+            // Build <content:encoded>
+            Elements postBody = doc.select(POST_BODY_SELECTOR);
+            if (!postBody.isEmpty()) {
+                Element contentEncoded = new Element("encoded", ce);
+                CDATA contentEncodedCdata = new CDATA(postBody.get(0).toString());
+                contentEncoded.setContent(contentEncodedCdata);
+                item.addContent(contentEncoded);
+            }
+
+            // Add Built <item> to list items
+            items.add(item);
+
+        }  catch(Exception e) {
+
+            System.out.println("ERROR I just spent a day at the beach mate... " + e.getMessage());
+            e.printStackTrace();
+
+        }
 
     }
 
@@ -70,90 +162,7 @@ public class hubXml {
 
         for(int i=0; i< POSTS.length; i++) {
 
-            try {
-                // Fetch the page
-                org.jsoup.nodes.Document doc = Jsoup.connect(POSTS[i]).userAgent(USER_AGENT).get();
-
-                // Build <item>
-                Element item = new Element("item");
-
-                // Build <title>
-                Elements title = doc.select(TITLE_SELECTOR);
-                if (!title.isEmpty()) {
-                    item.addContent(new Element("title").setText(title.get(0).text()));
-                }
-
-                // Build <link>
-                item.addContent(new Element("link").setText(POSTS[i]));
-
-                // Build <pubDate>
-                item.addContent(new Element("pubDate").setText("Wed, 25 Apr 2018 13:19:35 +0000"));
-
-                // Build <wp:postIid>
-                Element wpPostId = new Element("post_id", wp);
-                wpPostId.setText(String.valueOf(i + 1));
-                wpPostId.removeAttribute("wp");
-                item.addContent(wpPostId);
-
-                // Build <wp:status>
-                Element wpStatus = new Element("status", wp);
-                wpStatus.setText("publish");
-                item.addContent(wpStatus);
-
-                // Build <wp:post_type>
-                Element wpPostType = new Element("post_type", wp);
-                wpPostType.setText("post");
-                item.addContent(wpPostType);
-
-                // Build <excerpt:encoded>
-                Elements metaD = doc.select(META_DESCRIPTION_SELECTOR);
-                if (!metaD.isEmpty()) {
-                    Element excerptEncoded = new Element("encoded", ee);
-                    CDATA excerptEncodedCdata = new CDATA(metaD.get(0).attr("content"));
-                    excerptEncoded.setContent(excerptEncodedCdata);
-                    item.addContent(excerptEncoded);
-                }
-
-                // Build <dc:creator>
-                Elements authorElement = doc.select(AUTHOR_SELECTOR);
-                if (!authorElement.isEmpty()) {
-                    String author = authorElement.get(0).text();
-                    Element dcCreator = new Element("creator", dc);
-                    dcCreator.setText(author);
-                    item.addContent(dcCreator);
-                    // Build <wp:author>
-                    if (!authorList.contains(author)) {
-                        buildWpAuthor(author);
-                    }
-                }
-
-                // Build <category>(s)
-                Elements tags = doc.select(TAGS_SELECTOR);
-                if (!tags.isEmpty()) {
-                    for (org.jsoup.nodes.Element tag : tags) {
-                        Element category = new Element("category").setText(tag.ownText());
-                        category.setAttribute("domain", "category");
-                        category.setAttribute("nicename", tag.ownText().replace(" ", "-"));
-                        item.addContent(category);
-                    }
-                }
-
-                // Build <content:encoded>
-                Elements postBody = doc.select(POST_BODY_SELECTOR);
-                if (!postBody.isEmpty()) {
-                    Element contentEncoded = new Element("encoded", ce);
-                    CDATA contentEncodedCdata = new CDATA(postBody.get(0).toString());
-                    contentEncoded.setContent(contentEncodedCdata);
-                    item.addContent(contentEncoded);
-                }
-
-                // Add Built <item> to list items
-                items.add(item);
-
-            } catch(Exception e) {
-                System.out.println("ERROR I just spent a day at the beach mate... " + e.getMessage());
-                e.printStackTrace();
-            }
+            buildItem(POSTS[i], i);
 
         }
 
@@ -162,13 +171,17 @@ public class hubXml {
         document.setContent(rss);
 
         try {
+
             FileWriter writer = new FileWriter("blog.xml");
             XMLOutputter outputter = new XMLOutputter();
             outputter.setFormat(Format.getPrettyFormat());
             outputter.output(document, writer);
             outputter.output(document, System.out);
+
         } catch (Exception e) {
+
             e.printStackTrace();
+
         }
 
     }
