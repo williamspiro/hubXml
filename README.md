@@ -51,7 +51,7 @@ Below, find the _soup_ selectors which you need to set as CSS selectors for the 
 >>>>>
 <content:encoded><![CDATA[<div class=".post-body">This is the post body of my awesome post!</div>]]</content:encoded>
 ```
-`public static final String FEATURED_IMAGE_SELECTOR = ".featured-image";` - Grabs the featured image of the post (NOTE: the image url must be in the html of the page as a `src` attribute of `<img>` tag. It is also possible to grab inline `background` CSS declarations, but requires some modifications to the `String featuredImageUri` in `hubXml/src/main/java/hubXml.java`)
+`public static final String FEATURED_IMAGE_SELECTOR = ".featured-image";` - Grabs the featured image of the post (NOTE: the image url must be in the html of the page as a `src` attribute of `<img>` tag. It is also possible to grab inline `background` CSS declarations, but requires some modifications to the `String featuredImageUri` in `hubXml/src/main/java/hubXml.java`,  a commented out example is in there)
 ```
 <img class="featured-image" src="https://www.awesomeblog.com/featured-image.jpg">
 >>>>>
