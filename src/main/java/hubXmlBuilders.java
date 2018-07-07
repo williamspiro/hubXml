@@ -6,6 +6,10 @@ import org.jdom2.Namespace;
 import org.jsoup.Jsoup;
 import org.jsoup.select.Elements;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,6 +29,34 @@ class hubXmlBuilders {
     static Element rss = new Element("rss");
     static Element channel = new Element("channel");
     private static Element rootLink = new Element("link");
+
+    private static String getPubDate(String fethUri) {
+
+        try {
+
+            URL obj = new URL(fethUri);
+            HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+            con.setRequestMethod("GET");
+            con.setRequestProperty("User-Agent", USER_AGENT);
+            BufferedReader in = new BufferedReader(
+                    new InputStreamReader(con.getInputStream()));
+            String inputLine;
+            StringBuilder response = new StringBuilder();
+            while ((inputLine = in.readLine()) != null) {
+                response.append(inputLine);
+            }
+            in.close();
+
+            String responseString = response.toString();
+            return responseString.split("\"utcDate\":\"")[1].split("\"")[0];
+
+        } catch (Exception e) {
+
+            return "Wed, 25 Apr 2018 13:19:35 +0000";
+
+        }
+
+    }
 
     static void buildXmlSetup() {
 
@@ -84,7 +116,14 @@ class hubXmlBuilders {
             item.addContent(new Element("link").setText(post));
 
             // Build <pubDate>
-            item.addContent(new Element("pubDate").setText("Wed, 25 Apr 2018 13:19:35 +0000"));
+            Elements date = doc.select(hubXmlSelectors.DATE_SELECTOR);
+            if (!date.isEmpty()) {
+                String dateString = date.get(0).text();
+                String fetchDate = dateString.replace(","," ").replace("-"," ").replace(" ","%20");
+                String finalPubDate =  getPubDate("http://www.convert-unix-time.com/api?format=rfc1123&date=" + fetchDate);
+                Element pubDate = new Element("pubDate").setText(finalPubDate);
+                item.addContent(pubDate);
+            }
 
             // Build <wp:postIid>
             Element wpPostId = new Element("post_id", wp);
