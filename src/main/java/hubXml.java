@@ -143,7 +143,14 @@ public class hubXml {
             // Build <wp:postmeta> for featured image
             Elements featuredImage = doc.select(hubXmlVariables.FEATURED_IMAGE_SELECTOR);
             if (!featuredImage.isEmpty()) {
+
                 String featuredImageUri = featuredImage.get(0).attr("src");
+                // IF IMAGE SRC IS IN INLINE CSS OF ELEMENT, USE BELOW INSTEAD. MAKE SURE TO CHECK indexOfs values:
+                // PROTOCOL OF IMAGE SRC | indexOf("https://") or indexOf("http://")
+                // BACKGROUND URL SYNTAX | indexOf("')") OR indexOf(")") OR indexOf("')")
+                // String featuredImageStyle = featuredImage.attr("style");
+                // String featuredImageUri =  featuredImageStyle.substring(featuredImageStyle.indexOf("https://"), featuredImageStyle.indexOf("')"));
+
                 Element postMeta = new Element ("post_meta", wp);
                 item.addContent(postMeta);
                 postMeta.addContent(new Element ("meta_key", wp).setText("_thumbnail_id"));
@@ -158,9 +165,9 @@ public class hubXml {
             // Add Built <item> to list items
             items.add(item);
 
-        }  catch(Exception e) {
+        }  catch (Exception e) {
 
-            System.out.println("ERROR I just spent a day at the beach mate... " + e.getMessage());
+            System.out.println("ERROR " + e.getMessage());
             e.printStackTrace();
 
         }
