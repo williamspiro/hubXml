@@ -5,17 +5,12 @@ A tool to turn any externally hosted blog into a HubSpot importable XML file. It
 Selectors are set in `hubXmlSelectors.java`  
 XML building happens in `hubXmlBuilders.java`  
 _USAGE_  
-Requires manually setting a few variables in `hubXmlSelectors.java` and soup selectors to make sure we can scrub external content, and get all the content and data we need to import a blog into HubSpot. Running will output a blog.xml file which can be imported into HubSpot using the Blog Importer.    
+Requires manually setting a few variables in `hubXmlSelectors.java` and soup selectors to make sure we can scrub external content, and get all the content and data we need to import a blog into HubSpot. Quite a few other XML elements are set without any selector to set. Running will output a blog.xml file which can be imported into HubSpot using the Blog Importer.    
 
 ### __variables & soup selectors to set in hubXml/src/main/java/hubXmlSelectors.java__
 `static final String ROOT_URL` - The root url of the external blog you want to turn into an xml file  
 `static final String[] POSTS` - An array of external blog posts to turn into <item>(s) in the output xml file  
-Below, find the _soup_ selectors which you need to set as CSS selectors for the elements to find. Included are examples of the html element selected --> XML conversion:
-```
-[html from scrubbed post]
-CONVERTS TO >>>>>
-[xml output form hubXml.java]
-```
+Below, find the _soup_ selectors which you need to set as CSS selectors for the elements to find. Included are examples of the html element selected --> XML conversion:  
 `static final String TITLE_SELECTOR = "title";` - Grabs the title of the post  
 ```
 <title>Awesome Blog Post</title>
@@ -47,11 +42,9 @@ CONVERTS TO >>>>>
 ```
 `static final String TAGS_SELECTOR = "a[rel=category tag]";` - Grabs the tags of the post  
 ```
-<a href="link" rel="category tag">Tag 1</a>
-<a href="link" rel="category tag">Tag 2</a>
+<a href="link" rel="category tag">Awesome Blog Tag</a>
 >>>>>
-<category domain="category" nicename="tag-1"><![CDATA[Tag 1]]></category>
-<category domain="category" nicename="tag-2"><![CDATA[Tag 2]]></category>
+<category domain="category" nicename="Awesome-Blog-Tag"><![CDATA[Awesome Blog Tag]]></category>
 ```
 `static final String POST_BODY_SELECTOR = ".post-body";` - Grabs the content of the post  
 ```
@@ -76,32 +69,6 @@ CONVERTS TO >>>>>
     <wp:post_type>attachment</wp:post_type>
     <wp:attachment_url>https://www.awesomeblog.com/featured-image.jpg</wp:attachment_url>
 </item>
-
-```
-XML setup which happens on its own:
-```
-<?xml version='1.0' encoding='UTF-8'?>
-<rss>
-    <channel>
-        <link>!!~~blog root url link from ROOT_URL variable~~!!</link>
-        <
-            !!~~<wp:author>s build here~~!!
-        >
-        <
-            !!~~featured images <item>s build here~~!!
-        >
-        <item>
-            <link>!!~~post link from POSTS array~~!!</link>
-            <wp:post_id>!!~~set automatically~~!!</wp:post_id>
-            <wp:status>publish</wp:status>
-            <wp:post_type>post</wp:post_type>
-            <
-                !!~~The above soups fill in XML here~~!!
-            >
-        </item>
-        ... !!~~for every post in POSTS array, the above <item> is created~~!!
-    </channel>
-</rss>
 ```
 __Example final output :tada:__
 ```
@@ -130,7 +97,7 @@ __Example final output :tada:__
             <wp:post_type>post</wp:post_type>
             <excerpt:encoded><![CDATA[This is the meta description of my awesome post!]]></excerpt:encoded>
             <dc:creator>Author</dc:creator>
-            <category domain="category" nicename="This-is-a-tag">This is a tag</category>
+            <category domain="category" nicename="Awesome-Blog-Tag"><![CDATA[Awesome Blog Tag]]></category>
             <content:encoded><![CDATA[<div>This is the post body of my awesome post!</div>]]></content:encoded>
             <wp:post_meta>
                 <wp:meta_key>_thumbnail_id</wp:meta_key>
