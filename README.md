@@ -13,25 +13,31 @@ Requires manually setting a few variables in `hubXmlSelectors.java` and soup sel
 Below, find the _soup_ selectors which you need to set as CSS selectors for the elements to find. Included are examples of the html element selected --> XML conversion:
 ```
 [html from scrubbed post]
->>>>>
+CONVERTS TO >>>>>
 [xml output form hubXml.java]
 ```
 `static final String TITLE_SELECTOR = "title";` - Grabs the title of the post  
 ```
 <title>Awesome Blog Post</title>
->>>>>
+CONVERTS TO >>>>>
 <title>Awesome Blog Post</title> 
+```
+`static final String DATE_SELECTOR = ".published";` - Grabs the publish date of the post
+```
+<span class="published">July 2, 2018</span
+CONVERTS TO >>>>>
+<pubDate>Mon, 02 Jul 2018 00:00:00 +0000</pubDate>
 ```
 `static final String META_DESCRIPTION_SELECTOR = "meta[name=description]";` - Grabs the meta description of the post  
 ```
 <meta name="description" content="This is the meta description of my awesome post!"> 
->>>>>
+CONVERTS TO >>>>>
 <excerpt:encoded><![CDATA[This is the meta description of my awesome post!]]<excerpt:encoded>
 ```
 `static final String AUTHOR_SELECTOR = "a[rel=author]";` - Grabs the author of the post  
 ```
 <a href="link" rel="author">Author</a>
->>>>>
+CONVERTS TO >>>>>
 <dc:creator>Author</dc:creator>
 &
 <wp:author>
@@ -50,18 +56,18 @@ Below, find the _soup_ selectors which you need to set as CSS selectors for the 
 `static final String POST_BODY_SELECTOR = ".post-body";` - Grabs the content of the post  
 ```
 <div class=".post-body">This is the post body of my awesome post!</div>
->>>>>
+CONVERTS TO >>>>>
 <content:encoded><![CDATA[<div class=".post-body">This is the post body of my awesome post!</div>]]</content:encoded>
 ```
 `static final String FEATURED_IMAGE_SELECTOR = ".featured-image";` - Grabs the featured image of the post (NOTE: the image url must be in the html of the page as a `src` attribute of `<img>` tag. It is also possible to grab inline `background` CSS declarations, but requires some modifications to the `String featuredImageUri` in `hubXml/src/main/java/hubXmlBuilders.java`,  a commented out example is in there)
 ```
 <img class="featured-image" src="https://www.awesomeblog.com/featured-image.jpg">
->>>>>
+CONVERTS TO >>>>>
 <wp:post_eta>
     <wp:meta_key>_thumbnail_id</wp:meta_key>
     <wp:meta_value><![CDATA[2]]></wp:meta_value>
 </wp:post_eta>
-&
+& >>>>>
 <item>
     <title>https://www.awesomeblog.com/awesome-post</title>
     <link>https://www.awesomeblog.com/featured-image.jpg</link>
@@ -118,7 +124,7 @@ __Example final output :tada:__
         <item>
             <title>Awesome Blog Post</title>
             <link>https://www.awesomeblog.com/awesome-post</link>
-            <pubDate>Wed, 25 Apr 2018 13:19:35 +0000</pubDate>
+            <pubDate>Mon, 02 Jul 2018 00:00:00 +0000</pubDate>
             <wp:post_id>1</wp:post_id>
             <wp:status>publish</wp:status>
             <wp:post_type>post</wp:post_type>
