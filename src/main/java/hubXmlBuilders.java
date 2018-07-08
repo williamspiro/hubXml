@@ -155,8 +155,7 @@ class hubXmlBuilders {
                 excerptEncoded.setContent(excerptEncodedCdata);
                 item.addContent(excerptEncoded);
             } else {
-                System.out.println("Failed to find the meta description of " + post +
-                        ", so it was set to \"Becoming the dragon warrior you were always meant to be\"");
+                System.out.println("Failed to find the meta description of " + post + ", so it was set to \"Becoming the dragon warrior you were always meant to be\"");
                 item.addContent(new Element("encoded", ee).setText("Becoming the dragon warrior you were always meant to be" ));
             }
 
