@@ -67,7 +67,7 @@ CONVERTS TO >>>>>
     <wp:post_id>2</wp:post_id>
     <wp:post_parent>1</wp:post_parent>
     <wp:post_type>attachment</wp:post_type>
-    <wp:attachment_url>https://www.awesomeblog.com/featured-image.jpg</wp:attachment_url>
+    <wp:attachment_url>https://www.kungfupanda.com/dumplings/featured-image.jpg</wp:attachment_url>
 </item>
 ```
 __Example final output :tada:__
