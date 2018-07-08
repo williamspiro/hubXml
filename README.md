@@ -52,14 +52,14 @@ CONVERTS TO >>>>>
 CONVERTS TO >>>>>
 <content:encoded><![CDATA[<div class=".post-body">You must find <strong>inner peace</strong> to be an affective dragon warrior... and eat lost of dumplings</div>]]</content:encoded>
 ```
-`static final String FEATURED_IMAGE_SELECTOR = ".featured-image";` - Grabs the featured image of the post (NOTE: the image url must be in the html of the page as a `src` attribute of `<img>` tag. It is also possible to grab inline `background` CSS declarations, but requires some modifications to the `String featuredImageUri` in `hubXml/src/main/java/hubXmlBuilders.java`,  a commented out example is in there)
+`static final String FEATURED_IMAGE_SELECTOR = ".featured-image";` - Grabs the featured image of the post (NOTE: the image url must be in the html of the page as a `src` attribute of an `<img>` tag. It is also possible to grab inline `background` CSS declarations, but requires some modifications to the `String featuredImageUri` in `hubXml/src/main/java/hubXmlBuilders.java`,  a commented out example is in there)
 ```
 <img class="featured-image" src="https://www.kungfupanda.com/dumplings/featured-image.jpg">
 CONVERTS TO >>>>>
-<wp:post_eta>
+<wp:post_meta>
     <wp:meta_key>_thumbnail_id</wp:meta_key>
     <wp:meta_value><![CDATA[2]]></wp:meta_value>
-</wp:post_eta>
+</wp:post_meta>
 & >>>>>
 <item>
     <title>https://www.kungfupanda.com/dragon-warrior</title>
