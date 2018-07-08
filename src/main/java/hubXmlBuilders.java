@@ -30,34 +30,6 @@ class hubXmlBuilders {
     static Element channel = new Element("channel");
     private static Element rootLink = new Element("link");
 
-    private static String getPubDate(String fethUri) {
-
-        try {
-
-            URL obj = new URL(fethUri);
-            HttpURLConnection con = (HttpURLConnection) obj.openConnection();
-            con.setRequestMethod("GET");
-            con.setRequestProperty("User-Agent", USER_AGENT);
-            BufferedReader in = new BufferedReader(
-                    new InputStreamReader(con.getInputStream()));
-            String inputLine;
-            StringBuilder response = new StringBuilder();
-            while ((inputLine = in.readLine()) != null) {
-                response.append(inputLine);
-            }
-            in.close();
-
-            String responseString = response.toString();
-            return responseString.split("\"utcDate\":\"")[1].split("\"")[0];
-
-        } catch (Exception e) {
-
-            return "Wed, 25 Apr 2018 13:19:35 +0000";
-
-        }
-
-    }
-
     static void buildXmlSetup() {
 
         rss.addNamespaceDeclaration(ce);
@@ -96,6 +68,33 @@ class hubXmlBuilders {
 
     }
 
+    private static String getPubDate(String fethUri) {
+
+        try {
+
+            URL obj = new URL(fethUri);
+            HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+            con.setRequestMethod("GET");
+            con.setRequestProperty("User-Agent", USER_AGENT);
+            BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+            String inputLine;
+            StringBuilder response = new StringBuilder();
+            while ((inputLine = in.readLine()) != null) {
+                response.append(inputLine);
+            }
+            in.close();
+
+            String responseString = response.toString();
+            return responseString.split("\"utcDate\":\"")[1].split("\"")[0];
+
+        } catch (Exception e) {
+
+            return "Wed, 25 Apr 2018 13:19:35 +0000";
+
+        }
+
+    }
+
     static void buildItem(String post, Integer id) {
 
         try {
@@ -110,6 +109,10 @@ class hubXmlBuilders {
             Elements title = doc.select(hubXmlSelectors.TITLE_SELECTOR);
             if (!title.isEmpty()) {
                 item.addContent(new Element("title").setText(title.get(0).text()));
+            } else {
+                System.out.println("Failed to find the title of " + post +
+                        ", so it was set to \"Becoming the Dragon Warrior\"");
+                item.addContent(new Element("title").setText("Becoming the Dragon Warrior"));
             }
 
             // Build <link>
@@ -123,6 +126,9 @@ class hubXmlBuilders {
                 String finalPubDate =  getPubDate("http://www.convert-unix-time.com/api?format=rfc1123&date=" + fetchDate);
                 Element pubDate = new Element("pubDate").setText(finalPubDate);
                 item.addContent(pubDate);
+            } else {
+                System.out.println("Failed to find the publish date of " + post + ", so it was set to Wed, 25 Apr 2018 13:19:35 +0000");
+                item.addContent(new Element("pubDate").setText("Wed, 25 Apr 2018 13:19:35 +0000" ));
             }
 
             // Build <wp:postIid>
@@ -148,6 +154,10 @@ class hubXmlBuilders {
                 CDATA excerptEncodedCdata = new CDATA(metaD.get(0).attr("content"));
                 excerptEncoded.setContent(excerptEncodedCdata);
                 item.addContent(excerptEncoded);
+            } else {
+                System.out.println("Failed to find the meta description of " + post +
+                        ", so it was set to \"Becoming the dragon warrior you were always meant to be\"");
+                item.addContent(new Element("encoded", ee).setText("Becoming the dragon warrior you were always meant to be" ));
             }
 
             // Build <dc:creator>
@@ -161,6 +171,13 @@ class hubXmlBuilders {
                 if (!authorList.contains(author)) {
                     buildWpAuthor(author);
                 }
+            } else if (!authorList.isEmpty()) {
+                System.out.println("Failed to find the author of " + post + ", so its author was set to " + authorList.get(0));
+                item.addContent(new Element("creator", dc).setText(authorList.get(0)));
+            } else {
+                System.out.println("Failed to find the author of " + post + "and there is no previously found authors in this blog, so a default author \"Master Shifu\" was added");
+                item.addContent(new Element("creator", dc).setText("Master Shifu"));
+                buildWpAuthor("Master Shifu");
             }
 
             // Build <category>(s)
@@ -181,6 +198,9 @@ class hubXmlBuilders {
                 CDATA contentEncodedCdata = new CDATA(postBody.get(0).toString());
                 contentEncoded.setContent(contentEncodedCdata);
                 item.addContent(contentEncoded);
+            } else {
+                System.out.println("Failed to find the post body of " + post + ", so it was set to <div>You must find <strong>inner peace</strong> to be an affective dragon warrior...  and eat lost of dumplings</div>");
+                item.addContent(new Element("encoded", ee).setText("<div>You must find <strong>inner peace</strong> to be an affective dragon warrior... and eat lost of dumplings</div>"));
             }
 
             // Build <wp:postmeta> for featured image
@@ -190,7 +210,7 @@ class hubXmlBuilders {
                 String featuredImageUri = featuredImage.get(0).attr("src");
                 // IF IMAGE SRC IS IN INLINE CSS OF ELEMENT, USE BELOW INSTEAD. MAKE SURE TO CHECK indexOfs values:
                 // PROTOCOL OF IMAGE SRC | indexOf("https://") or indexOf("http://")
-                // BACKGROUND URL SYNTAX | indexOf("')") OR indexOf(")") OR indexOf("')")
+                // BACKGROUND URL SYNTAX | indexOf("')") OR indexOf(")")
                 // String featuredImageStyle = featuredImage.attr("style");
                 // String featuredImageUri =  featuredImageStyle.substring(featuredImageStyle.indexOf("https://"), featuredImageStyle.indexOf("')"));
 
@@ -210,8 +230,8 @@ class hubXmlBuilders {
 
         }  catch (Exception e) {
 
-            System.out.println("ERROR " + e.getMessage());
-            e.printStackTrace();
+            System.out.println("Failed to find post " + post);
+            // e.printStackTrace();
 
         }
 

@@ -15,7 +15,7 @@ public class hubXml {
         // Build XML Setup
         hubXmlBuilders.buildXmlSetup();
 
-        for(int i=0; i< hubXmlSelectors.POSTS.length; i++) {
+        for (int i=0; i< hubXmlSelectors.POSTS.length; i++) {
 
             // Build <items>
             hubXmlBuilders.buildItem(hubXmlSelectors.POSTS[i], i);
@@ -29,12 +29,12 @@ public class hubXml {
 
         try {
 
-            // Build blog.xml and log output
+            // Build blog.xml
             FileWriter writer = new FileWriter("blog.xml");
             XMLOutputter outputter = new XMLOutputter();
             outputter.setFormat(Format.getPrettyFormat());
             outputter.output(hubXmlBuilders.document, writer);
-            outputter.output(hubXmlBuilders.document, System.out);
+            // outputter.output(hubXmlBuilders.document, System.out);
 
         } catch (Exception e) {
 
