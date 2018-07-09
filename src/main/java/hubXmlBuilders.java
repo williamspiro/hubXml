@@ -132,20 +132,13 @@ class hubXmlBuilders {
             }
 
             // Build <wp:postIid>
-            Element wpPostId = new Element("post_id", wp);
-            wpPostId.setText(String.valueOf(id + 1));
-            wpPostId.removeAttribute("wp");
-            item.addContent(wpPostId);
+            item.addContent(new Element("post_id", wp).setText(String.valueOf(id + 1)));
 
             // Build <wp:status>
-            Element wpStatus = new Element("status", wp);
-            wpStatus.setText("publish");
-            item.addContent(wpStatus);
+            item.addContent(new Element("status", wp).setText("publish"));
 
             // Build <wp:post_type>
-            Element wpPostType = new Element("post_type", wp);
-            wpPostType.setText("post");
-            item.addContent(wpPostType);
+            item.addContent(new Element("post_type", wp).setText("post"));
 
             // Build <excerpt:encoded>
             Elements metaD = doc.select(hubXmlSelectors.META_DESCRIPTION_SELECTOR);
