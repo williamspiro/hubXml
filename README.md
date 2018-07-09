@@ -8,7 +8,6 @@ _USAGE_
 Requires manually setting a few variables in `hubXmlSelectors.java` and soup selectors to make sure we can scrub content, and get all the content and data we need to import a blog into HubSpot. Quite a few other XML elements are set without any selector to set. Running will output a blog.xml file which can be imported into HubSpot using the Blog Importer.    
 
 ### __variables & soup selectors to set in hubXml/src/main/java/hubXmlSelectors.java__
-`static final String ROOT_URL` - The root url of the blog you want to turn into an xml file  
 `static final String[] POSTS` - An array of blog posts to turn into <item>(s) in the output xml file  
 Below, find the _soup_ selectors which you need to set as CSS selectors for the elements to find. Included are examples of the html element selected --> XML conversion:  
 `static final String TITLE_SELECTOR = "title";` - Grabs the title of the post  
