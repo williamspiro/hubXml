@@ -38,7 +38,7 @@ class hubXmlBuilders {
         rss.addNamespaceDeclaration(dc);
         rss.addContent(channel);
         channel.addContent(rootLink);
-        rootLink.setText(hubXmlSelectors.ROOT_URL);
+        rootLink.setText("https://www.kungfupandablog.com");
     }
 
     private static void buildWpAuthor(String author) {
