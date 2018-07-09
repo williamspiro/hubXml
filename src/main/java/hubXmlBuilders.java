@@ -23,8 +23,8 @@ class hubXmlBuilders {
     private static Namespace wp = Namespace.getNamespace("wp", "http://wordpress.org/export/1.2/");
     private static Namespace dc = Namespace.getNamespace("dc", "http://purl.org/dc/elements/1.1/");
     private static ArrayList<String> authorList = new ArrayList<String>();
-    static List items = new ArrayList();
-    static List featuredItems = new ArrayList();
+    static List<Element> items = new ArrayList<Element>();
+    static List<Element> featuredItems = new ArrayList<Element>();
     static Document document = new Document();
     static Element rss = new Element("rss");
     static Element channel = new Element("channel");
