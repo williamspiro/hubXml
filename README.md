@@ -5,9 +5,10 @@ A tool to turn any blog into a HubSpot importable XML file. It will grab post ti
 Selectors are set in `hubXmlSelectors.java`  
 XML building happens in `hubXmlBuilders.java`  
 _USAGE_  
-Requires manually setting a few variables in `hubXmlSelectors.java` and soup selectors to make sure we can scrub content, and get all the content and data we need to import a blog into HubSpot. Quite a few other XML elements are set without any selector to set. Running will output a blog.xml file which can be imported into HubSpot using the Blog Importer.    
+Requires manually setting a few variables in `hubXmlSelectors.java` and soup selectors to make sure we can scrub content, and get all the content and data we need to import a blog into HubSpot. Quite a few other XML elements are set without any selector to set. Running will output a blog.xml file which can be imported into HubSpot using the Blog Importer. If required elements are not able to be found, default values are set, and errors are logged.    
 
 ### __variables & soup selectors to set in hubXml/src/main/java/hubXmlSelectors.java__
+_Required Elements:_  
 `static final String[] POSTS` - An array of blog posts to turn into <item>(s) in the output xml file  
 Below, find the _soup_ selectors which you need to set as CSS selectors for the elements to find. Included are examples of the html element selected --> XML conversion:  
 `static final String TITLE_SELECTOR = "title";` - Grabs the title of the post  
@@ -51,6 +52,7 @@ CONVERTS TO >>>>>
 CONVERTS TO >>>>>
 <content:encoded><![CDATA[<div class=".post-body">You must find <strong>inner peace</strong> to be an affective dragon warrior... and eat lost of dumplings</div>]]</content:encoded>
 ```
+_Optional Elements:_  
 `static final String FEATURED_IMAGE_SELECTOR = ".featured-image";` - Grabs the featured image of the post (NOTE: the image url must be in the html of the page as a `src` attribute of an `<img>` tag. It is also possible to grab inline `background` CSS declarations, but requires some modifications to the `String featuredImageUri` in `hubXml/src/main/java/hubXmlBuilders.java`,  a commented out example is in there)
 ```
 <img class="featured-image" src="https://www.kungfupanda.com/dumplings/featured-image.jpg">
@@ -68,6 +70,26 @@ CONVERTS TO >>>>>
     <wp:post_type>attachment</wp:post_type>
     <wp:attachment_url>https://www.kungfupanda.com/dumplings/featured-image.jpg</wp:attachment_url>
 </item>
+```
+`static final String COMMENT_WRAPPER_SELECTOR = ".comment";` - The wrapping element of individual comments. Comments are optional, but if comments are found, all child comment elements are required  
+`static final String COMMENT_TEXT_SELECTOR = ".comment-content p";` - Grabs comment text  
+`static final String COMMENT_AUTHOR_SELECTOR = ".name";` - Grabs commenter name 
+`static final String COMMENT_AUTHOR_EMAIL_SELECTOR = ".email";` - Grabs commenter email  
+```
+<div class="comment">
+	<span class="name">Master Oogway</span>
+	<span class="email">oogway@thejadepalace.com</span>
+	<p class="comment-content">Yesterday is history, tomorrow is a mystery, but today is a gift. That is why it is called the present.</div>
+</div>
+CONVERTS TO >>>>>
+<wp:comment>
+	<wp:comment_id>1</wp:comment_id>
+	<wp:comment_author>Master Oogway</wp:comment_author>
+	<wp:comment_author_email>oogway@thejadepalace.com</wp:comment_author_email>
+	<wp:comment_date>2018-07-02 17:49:32</wp:comment_date>
+	<wp:comment_content><![CDATA[Yesterday is history, tomorrow is a mystery, but today is a gift. That is why it is called the present.]]></wp:comment_content>
+	<wp:comment_approved>1</wp:comment_approved>
+</wp:comment>
 ```
 __Example final output :tada:__
 ```
@@ -102,10 +124,17 @@ __Example final output :tada:__
                 <wp:meta_key>_thumbnail_id</wp:meta_key>
                 <wp:meta_value><![CDATA[2]]></wp:meta_value>
             </wp:post_meta>
+            <wp:comment>
+            	<wp:comment_id>1</wp:comment_id>
+            	<wp:comment_author>Master Oogway</wp:comment_author>
+            	<wp:comment_author_email>oogway@thejadepalace.com</wp:comment_author_email>
+            	<wp:comment_date>2018-07-02 17:49:32</wp:comment_date>
+            	<wp:comment_content><![CDATA[Yesterday is history, tomorrow is a mystery, but today is a gift. That is why it is called the present.]]></wp:comment_content>
+            	<wp:comment_approved>1</wp:comment_approved>
+            </wp:comment>
+            ~~~ the rest of the <item>'s comments ~~~
         </item>
-        <item>
-            ... the rest of your post <items>...
-        </item>
+        ~~~ the rest of your post <item>s ~~~
     </channel>
 </rss>
 

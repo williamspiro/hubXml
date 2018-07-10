@@ -15,10 +15,10 @@ class hubXmlSelectors {
     // Optional elements for a given <item> no default value or error is logged
 
     static final String FEATURED_IMAGE_SELECTOR = ".featured-image";
-    static final String COMMENT_WRAPPER_SELECTOR = ".comment-body";
+    static final String COMMENT_WRAPPER_SELECTOR = ".comment";
     // Comments are optional for a given <item> but within a comment, all comment elements are required
     // If a comment element is not found in a given comment, a default value is set, and the error is logged
-    static final String COMMENT_TEXT_SELECTOR = ".comment-content p";
+    static final String COMMENT_TEXT_SELECTOR = ".comment-content";
     static final String COMMENT_AUTHOR_SELECTOR = ".name";
     static final String COMMENT_AUTHOR_EMAIL_SELECTOR = ".email";
     // :)
