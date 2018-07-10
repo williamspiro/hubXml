@@ -29,6 +29,7 @@ class hubXmlBuilders {
     static Element rss = new Element("rss");
     static Element channel = new Element("channel");
     private static Element rootLink = new Element("link");
+    private static int commentId = 0;
 
     static void buildXmlSetup() {
 
@@ -215,6 +216,36 @@ class hubXmlBuilders {
                 postMeta.addContent(metaValue);
                 // Build <item> for featured image
                 buildFeaturedImage(post, featuredImageUri, id);
+            }
+
+            // Build <wp:comment>(s)
+            Elements comments = doc.select(hubXmlSelectors.COMMENT_WRAPPER_SELECTOR);
+            if (!comments.isEmpty()) {
+                for (org.jsoup.nodes.Element comment : comments) {
+                    Element wpComment = new Element("comment", wp);
+                    wpComment.addContent(new Element("comment_id", wp).setText(String.valueOf(commentId)));
+                    if (!comment.select(hubXmlSelectors.COMMENT_AUTHOR_SELECTOR).isEmpty()) {
+                        wpComment.addContent(new Element("comment_author", wp).setText(comment.select(hubXmlSelectors.COMMENT_AUTHOR_SELECTOR).get(0).text()));
+                    } else {
+                        wpComment.addContent(new Element("comment_author", wp).setText("Anonymous Commenter"));
+                        System.out.println("Failed to find a comment author name, so it was set to \"Anonymous Commenter\"");
+                    }
+                    if (!comment.select(hubXmlSelectors.COMMENT_AUTHOR_EMAIL_SELECTOR).isEmpty()) {
+                        wpComment.addContent(new Element("comment_author_email", wp).setText(comment.select(hubXmlSelectors.COMMENT_AUTHOR_EMAIL_SELECTOR).get(0).text()));
+                    } else {
+                        wpComment.addContent(new Element("comment_author_email", wp).setText("AnonymousCommenter@AnonymousCommenter.com"));
+                        System.out.println("Failed to find a comment author email, so it was set to \"AnonymousCommenter@AnonymousCommenter.com\"");
+                    }
+                    // TODO figure out how to deal with comment date
+                    wpComment.addContent(new Element("comment_date", wp).setText("2018-07-02 17:49:32"));
+                    Element commentContent = new Element("comment_content", wp);
+                    CDATA commentContentCdata = new CDATA(comment.select(hubXmlSelectors.COMMENT_TEXT_SELECTOR).get(0).text());
+                    commentContent.addContent(commentContentCdata);
+                    wpComment.addContent(commentContent);
+                    wpComment.addContent(new Element("comment_approved", wp).setText("1"));
+                    item.addContent(wpComment);
+                    commentId++;
+                }
             }
 
             // Add Built <item> to list items
