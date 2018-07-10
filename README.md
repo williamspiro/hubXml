@@ -73,7 +73,7 @@ CONVERTS TO >>>>>
 ```
 `static final String COMMENT_WRAPPER_SELECTOR = ".comment";` - The wrapping element of individual comments. Comments are optional, but if comments are found, all child comment elements are required  
 `static final String COMMENT_TEXT_SELECTOR = ".comment-content p";` - Grabs comment text  
-`static final String COMMENT_AUTHOR_SELECTOR = ".name";` - Grabs commenter name 
+`static final String COMMENT_AUTHOR_SELECTOR = ".name";` - Grabs commenter name   
 `static final String COMMENT_AUTHOR_EMAIL_SELECTOR = ".email";` - Grabs commenter email  
 ```
 <div class="comment">
