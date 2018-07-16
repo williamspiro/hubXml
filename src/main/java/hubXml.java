@@ -15,7 +15,13 @@ public class hubXml {
         // Build XML Setup
         hubXmlBuilders.buildXmlSetup();
 
+        System.out.println("Building an XML file for " + hubXmlSelectors.POSTS.length + " posts");
+
         for (int i=0; i< hubXmlSelectors.POSTS.length; i++) {
+
+            if (i % 10 == 0) {
+                System.out.println(i + "/" + hubXmlSelectors.POSTS.length);
+            }
 
             // Build <items>
             hubXmlBuilders.buildItem(hubXmlSelectors.POSTS[i], i);
