@@ -39,7 +39,7 @@ class hubXmlBuilders {
         rss.addNamespaceDeclaration(dc);
         rss.addContent(channel);
         channel.addContent(rootLink);
-        rootLink.setText("https://www.kungfupandablog.com");
+        rootLink.setText("https://www.blogblogblog.com");
     }
 
     private static void buildWpAuthor(String author) {
@@ -112,8 +112,8 @@ class hubXmlBuilders {
                 item.addContent(new Element("title").setText(title.get(0).text()));
             } else {
                 System.out.println("Failed to find the title of " + post +
-                        ", so it was set to \"Becoming the Dragon Warrior\"");
-                item.addContent(new Element("title").setText("Becoming the Dragon Warrior"));
+                        ", so it was set to \"Sample Title\"");
+                item.addContent(new Element("title").setText("Sample Title"));
             }
 
             // Build <link>
@@ -149,8 +149,8 @@ class hubXmlBuilders {
                 excerptEncoded.setContent(excerptEncodedCdata);
                 item.addContent(excerptEncoded);
             } else {
-                System.out.println("Failed to find the meta description of " + post + ", so it was set to \"Becoming the dragon warrior you were always meant to be\"");
-                item.addContent(new Element("encoded", ee).setText("Becoming the dragon warrior you were always meant to be" ));
+                System.out.println("Failed to find the meta description of " + post + ", so it was set to \"Sample meta description\"");
+                item.addContent(new Element("encoded", ee).setText("Sample meta description" ));
             }
 
             // Build <dc:creator>
@@ -168,9 +168,9 @@ class hubXmlBuilders {
                 System.out.println("Failed to find the author of " + post + ", so its author was set to " + authorList.get(0));
                 item.addContent(new Element("creator", dc).setText(authorList.get(0)));
             } else {
-                System.out.println("Failed to find the author of " + post + "and there is no previously found authors in this blog, so a default author \"Master Shifu\" was added");
-                item.addContent(new Element("creator", dc).setText("Master Shifu"));
-                buildWpAuthor("Master Shifu");
+                System.out.println("Failed to find the author of " + post + "and there is no previously found authors in this blog, so a default author \"Admin\" was added");
+                item.addContent(new Element("creator", dc).setText("Admin"));
+                buildWpAuthor("Admin");
             }
 
             // Build <category>(s)
@@ -192,8 +192,8 @@ class hubXmlBuilders {
                 contentEncoded.setContent(contentEncodedCdata);
                 item.addContent(contentEncoded);
             } else {
-                System.out.println("Failed to find the post body of " + post + ", so it was set to <div>You must find <strong>inner peace</strong> to be an affective dragon warrior...  and eat lost of dumplings</div>");
-                item.addContent(new Element("encoded", ee).setText("<div>You must find <strong>inner peace</strong> to be an affective dragon warrior... and eat lost of dumplings</div>"));
+                System.out.println("Failed to find the post body of " + post + ", so it was set to \"Sample post body\"");
+                item.addContent(new Element("encoded", ee).setText("Sample post body"));
             }
 
             // Build <wp:postmeta> for featured image
