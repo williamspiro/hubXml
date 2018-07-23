@@ -186,6 +186,9 @@ class hubXmlBuilders {
 
             // Build <content:encoded>
             Elements postBody = doc.select(hubXmlSelectors.POST_BODY_SELECTOR);
+            if (hubXmlSelectors.POST_BODY_SELECTOR_REMOVER.length() != 0) {
+                postBody.select(hubXmlSelectors.POST_BODY_SELECTOR_REMOVER).remove();
+            }
             if (!postBody.isEmpty()) {
                 Element contentEncoded = new Element("encoded", CONTENT_ENCODED);
                 CDATA contentEncodedCdata = new CDATA(postBody.get(0).toString());

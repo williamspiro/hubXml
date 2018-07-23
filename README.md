@@ -40,7 +40,7 @@ CONVERTS TO >>>>>
     <wp:author_login><![CDATA[Master Shifu]]></wp:author_login>
 </wp:author>
 ```
-`static final String TAGS_SELECTOR = "a[rel=category tag]";` - Grabs the tags of the post  
+`static final String TAGS_SELECTOR = "a[rel=category tag]";` - Grabs the tags of the post. NOTE: you can set `POST_BODY_SELECTOR_REMOVER` to an element to be removed from the post body, if there is no posy body wrapper or some element needs to be removed   
 ```
 <a href="link" rel="category tag">Wuxi Finger Hold</a>
 >>>>>
