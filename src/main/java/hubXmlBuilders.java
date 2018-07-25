@@ -64,7 +64,12 @@ class hubXmlBuilders {
         featuredItem.addContent(new Element("post_id", WP).setText(String.valueOf(id + 4000)));
         featuredItem.addContent(new Element("post_parent", WP).setText(String.valueOf(id + 1)));
         featuredItem.addContent(new Element("post_type", WP).setText("attachment"));
-        featuredItem.addContent(new Element("attachment_url", WP).setText(featuredImageUri.split("[?]")[0]));
+        if (featuredImageUri.startsWith("http")) {
+            featuredItem.addContent(new Element("attachment_url", WP).setText(featuredImageUri.split("[?]")[0]));
+        } else {
+            featuredItem.addContent(new Element("attachment_url", WP).setText(post.split("(?<!/)/(?!/)")[0] + featuredImageUri.split("[?]")[0]));
+            System.out.println(post.split("(?<!/)/(?!/)")[0] + featuredImageUri.split("[?]")[0]);
+        }
         featuredItems.add(featuredItem);
 
     }
