@@ -186,23 +186,6 @@ class hubXmlBuilders {
                 }
             }
 
-            // Build <content:encoded>
-            Elements postBody = doc.select(hubXmlSelectors.POST_BODY_SELECTOR);
-            if (hubXmlSelectors.POST_BODY_SELECTOR_REMOVER[0].length() != 0) {
-                for (String remover : hubXmlSelectors.POST_BODY_SELECTOR_REMOVER) {
-                    postBody.select(remover).remove();
-                }
-            }
-            if (!postBody.isEmpty()) {
-                Element contentEncoded = new Element("encoded", CONTENT_ENCODED);
-                CDATA contentEncodedCdata = new CDATA(postBody.get(0).toString());
-                contentEncoded.setContent(contentEncodedCdata);
-                item.addContent(contentEncoded);
-            } else {
-                System.out.println("Failed to find the post body of " + post + ", so it was set to \"Sample post body\"");
-                item.addContent(new Element("encoded", CONTENT_ENCODED).setText("Sample post body"));
-            }
-
             // Build <wp:postmeta> for featured image
             Elements featuredImage = doc.select(hubXmlSelectors.FEATURED_IMAGE_SELECTOR);
             if (!featuredImage.isEmpty()) {
@@ -258,6 +241,23 @@ class hubXmlBuilders {
                     item.addContent(wpComment);
                     commentId++;
                 }
+            }
+
+            // Build <content:encoded>
+            if (hubXmlSelectors.POST_BODY_SELECTOR_REMOVER[0].length() != 0) {
+                for (String remover : hubXmlSelectors.POST_BODY_SELECTOR_REMOVER) {
+                    doc.select(remover).get(0).remove();
+                }
+            }
+            Elements postBody = doc.select(hubXmlSelectors.POST_BODY_SELECTOR);
+            if (!postBody.isEmpty()) {
+                Element contentEncoded = new Element("encoded", CONTENT_ENCODED);
+                CDATA contentEncodedCdata = new CDATA(postBody.get(0).toString());
+                contentEncoded.setContent(contentEncodedCdata);
+                item.addContent(contentEncoded);
+            } else {
+                System.out.println("Failed to find the post body of " + post + ", so it was set to \"Sample post body\"");
+                item.addContent(new Element("encoded", CONTENT_ENCODED).setText("Sample post body"));
             }
 
             // Add Built <item> to list items
