@@ -174,15 +174,13 @@ class hubXmlBuilders {
             }
 
             // Build <category>(s)
-            if (hubXmlSelectors.TAGS_SELECTOR.length() != 0) {
-                Elements tags = doc.select(hubXmlSelectors.TAGS_SELECTOR);
-                if (!tags.isEmpty()) {
-                    for (org.jsoup.nodes.Element tag : tags) {
-                        Element category = new Element("category").setText(tag.ownText());
-                        category.setAttribute("domain", "category");
-                        category.setAttribute("nicename", tag.ownText().replace(" ", "-"));
-                        item.addContent(category);
-                    }
+            Elements tags = doc.select(hubXmlSelectors.TAGS_SELECTOR);
+            if (!tags.isEmpty()) {
+                for (org.jsoup.nodes.Element tag : tags) {
+                    Element category = new Element("category").setText(tag.ownText());
+                    category.setAttribute("domain", "category");
+                    category.setAttribute("nicename", tag.ownText().replace(" ", "-"));
+                    item.addContent(category);
                 }
             }
 
