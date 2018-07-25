@@ -47,7 +47,8 @@ CONVERTS TO >>>>>
 <category domain="category" nicename="Wuxi-Finger-Hold"><![CDATA[Wuxi Finger Hold]]></category>
 ```
 `static final String POST_BODY_SELECTOR = ".post-body";` - Grabs the content of the post   
-_NOTE:_ you can set `POST_BODY_SELECTOR_REMOVER` to an element to be removed from the post body, if there is no posy body wrapper or some element needs to be removed
+_NOTE:_ you can set `POST_BODY_SELECTOR_REMOVER` to an element(s) to be removed from the post body, if there is no posy body wrapper or some element needs to be removed. Example:  
+`static final String[] POST_BODY_SELECTOR_REMOVER = {".social-sharing",".post-body-cta"};`
 ```
 <div class=".post-body">You must find <strong>inner peace</strong> to be an affective dragon warrior... and eat lost of dumplings</div>
 CONVERTS TO >>>>>
