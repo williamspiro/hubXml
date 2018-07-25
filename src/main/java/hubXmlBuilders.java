@@ -257,7 +257,7 @@ class hubXmlBuilders {
             Elements postBody = doc.select(hubXmlSelectors.POST_BODY_SELECTOR);
             if (!postBody.isEmpty()) {
                 Element contentEncoded = new Element("encoded", CONTENT_ENCODED);
-                CDATA contentEncodedCdata = new CDATA(postBody.get(0).toString());
+                CDATA contentEncodedCdata = new CDATA(postBody.get(0).toString().replace("\n", ""));
                 contentEncoded.setContent(contentEncodedCdata);
                 item.addContent(contentEncoded);
             } else {
