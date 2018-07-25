@@ -123,7 +123,7 @@ class hubXmlBuilders {
             Elements date = doc.select(hubXmlSelectors.DATE_SELECTOR);
             if (!date.isEmpty()) {
                 String dateString = date.get(0).text();
-                String fetchDate = dateString.replace(","," ").replace("-"," ").replace(" ","%20");
+                String fetchDate = dateString.replace(","," ").replace("-"," ").replace(" ","%20").replace("/","%2F");
                 String finalPubDate =  getPubDate("http://www.convert-unix-time.com/api?format=rfc1123&date=" + fetchDate);
                 Element pubDate = new Element("pubDate").setText(finalPubDate);
                 item.addContent(pubDate);
