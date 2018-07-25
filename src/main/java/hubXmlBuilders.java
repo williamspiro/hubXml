@@ -174,20 +174,22 @@ class hubXmlBuilders {
             }
 
             // Build <category>(s)
-            Elements tags = doc.select(hubXmlSelectors.TAGS_SELECTOR);
-            if (!tags.isEmpty()) {
-                for (org.jsoup.nodes.Element tag : tags) {
-                    Element category = new Element("category").setText(tag.ownText());
-                    category.setAttribute("domain", "category");
-                    category.setAttribute("nicename", tag.ownText().replace(" ", "-"));
-                    item.addContent(category);
+            if (hubXmlSelectors.TAGS_SELECTOR.length() != 0) {
+                Elements tags = doc.select(hubXmlSelectors.TAGS_SELECTOR);
+                if (!tags.isEmpty()) {
+                    for (org.jsoup.nodes.Element tag : tags) {
+                        Element category = new Element("category").setText(tag.ownText());
+                        category.setAttribute("domain", "category");
+                        category.setAttribute("nicename", tag.ownText().replace(" ", "-"));
+                        item.addContent(category);
+                    }
                 }
             }
 
             // Build <content:encoded>
             Elements postBody = doc.select(hubXmlSelectors.POST_BODY_SELECTOR);
-            if (hubXmlSelectors.POST_BODY_SELECTOR_REMOVER.length() != 0) {
-                postBody.select(hubXmlSelectors.POST_BODY_SELECTOR_REMOVER).remove();
+            for (String remover : hubXmlSelectors.POST_BODY_SELECTOR_REMOVER) {
+                postBody.select(remover).remove();
             }
             if (!postBody.isEmpty()) {
                 Element contentEncoded = new Element("encoded", CONTENT_ENCODED);
