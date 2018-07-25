@@ -188,8 +188,10 @@ class hubXmlBuilders {
 
             // Build <content:encoded>
             Elements postBody = doc.select(hubXmlSelectors.POST_BODY_SELECTOR);
-            for (String remover : hubXmlSelectors.POST_BODY_SELECTOR_REMOVER) {
-                postBody.select(remover).remove();
+            if (hubXmlSelectors.POST_BODY_SELECTOR_REMOVER[0].length() != 0) {
+                for (String remover : hubXmlSelectors.POST_BODY_SELECTOR_REMOVER) {
+                    postBody.select(remover).remove();
+                }
             }
             if (!postBody.isEmpty()) {
                 Element contentEncoded = new Element("encoded", CONTENT_ENCODED);
