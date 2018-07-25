@@ -123,7 +123,7 @@ class hubXmlBuilders {
             Elements date = doc.select(hubXmlSelectors.DATE_SELECTOR);
             if (!date.isEmpty()) {
                 String dateString = date.get(0).text();
-                String fetchDate = dateString.replace(","," ").replace("-"," ").replace(" ","%20");
+                String fetchDate = dateString.replace(","," ").replace("-"," ").replace(" ","%20").replace("/","%2F");
                 String finalPubDate =  getPubDate("http://www.convert-unix-time.com/api?format=rfc1123&date=" + fetchDate);
                 Element pubDate = new Element("pubDate").setText(finalPubDate);
                 item.addContent(pubDate);
@@ -174,13 +174,15 @@ class hubXmlBuilders {
             }
 
             // Build <category>(s)
-            Elements tags = doc.select(hubXmlSelectors.TAGS_SELECTOR);
-            if (!tags.isEmpty()) {
-                for (org.jsoup.nodes.Element tag : tags) {
-                    Element category = new Element("category").setText(tag.ownText());
-                    category.setAttribute("domain", "category");
-                    category.setAttribute("nicename", tag.ownText().replace(" ", "-"));
-                    item.addContent(category);
+            if (hubXmlSelectors.TAGS_SELECTOR.length() != 0) {
+                Elements tags = doc.select(hubXmlSelectors.TAGS_SELECTOR);
+                if (!tags.isEmpty()) {
+                    for (org.jsoup.nodes.Element tag : tags) {
+                        Element category = new Element("category").setText(tag.ownText());
+                        category.setAttribute("domain", "category");
+                        category.setAttribute("nicename", tag.ownText().replace(" ", "-"));
+                        item.addContent(category);
+                    }
                 }
             }
 
