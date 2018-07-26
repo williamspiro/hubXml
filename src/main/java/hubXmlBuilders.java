@@ -251,7 +251,11 @@ class hubXmlBuilders {
             // Build <content:encoded>
             if (hubXmlSelectors.POST_BODY_SELECTOR_REMOVER[0].length() != 0) {
                 for (String remover : hubXmlSelectors.POST_BODY_SELECTOR_REMOVER) {
-                    doc.select(remover).get(0).remove();
+                    try {
+                        doc.select(remover).get(0).remove();
+                    } catch (Exception e) {
+                        System.out.println("Unable to find element " + remover + " from the post body of " + post);
+                    }
                 }
             }
             Elements postBody = doc.select(hubXmlSelectors.POST_BODY_SELECTOR);
