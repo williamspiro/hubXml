@@ -16,6 +16,7 @@ import java.util.List;
 class hubXmlBuilders {
 
     private static final String USER_AGENT = "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/45.0.2454.101 Safari/537.36";
+    private static final String DATE_CLEANER_PATTERN = "(?i)[a-zA-Z]+\\b(?<!\\b(january)|(jan)|(february)|(feb)|(march)|(mar)|(april)|(apr)|(may)|(june)|(jun)|(july)|(jul)|(august)|(aug)|(september)|(sep)|(october)|(oct)|(november)|(nov)|(december)|(dec))";
 
     // XML Setup
     private static final Namespace CONTENT_ENCODED = Namespace.getNamespace("content", "http://purl.org/rss/1.0/modules/content/");
@@ -68,17 +69,16 @@ class hubXmlBuilders {
             featuredItem.addContent(new Element("attachment_url", WP).setText(featuredImageUri.split("[?]")[0]));
         } else {
             featuredItem.addContent(new Element("attachment_url", WP).setText(post.split("(?<!/)/(?!/)")[0] + featuredImageUri.split("[?]")[0]));
-            System.out.println(post.split("(?<!/)/(?!/)")[0] + featuredImageUri.split("[?]")[0]);
         }
         featuredItems.add(featuredItem);
 
     }
 
-    private static String getPubDate(String fethUri) {
+    private static String getPubDate(String fetchUriDate) {
 
         try {
 
-            URL obj = new URL(fethUri);
+            URL obj = new URL("http://www.convert-unix-time.com/api?format=rfc1123&date=" + fetchUriDate);
             HttpURLConnection con = (HttpURLConnection) obj.openConnection();
             con.setRequestMethod("GET");
             con.setRequestProperty("User-Agent", USER_AGENT);
@@ -95,6 +95,7 @@ class hubXmlBuilders {
 
         } catch (Exception e) {
 
+            System.out.println("Found date, having convert-unix-time.com/api issues");
             return "Wed, 25 Apr 2018 13:19:35 +0000";
 
         }
@@ -128,8 +129,8 @@ class hubXmlBuilders {
             Elements date = doc.select(hubXmlSelectors.DATE_SELECTOR);
             if (!date.isEmpty()) {
                 String dateString = date.get(0).text();
-                String fetchDate = dateString.replace(","," ").replace("-"," ").replace(" ","%20").replace("/","%2F");
-                String finalPubDate =  getPubDate("http://www.convert-unix-time.com/api?format=rfc1123&date=" + fetchDate);
+                String fetchDate = dateString.replaceAll(DATE_CLEANER_PATTERN, "").replace(","," ").replace("-"," ").replace(" ","%20").replace("/","%2F");
+                String finalPubDate =  getPubDate(fetchDate);
                 Element pubDate = new Element("pubDate").setText(finalPubDate);
                 item.addContent(pubDate);
             } else {
