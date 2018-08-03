@@ -12,19 +12,21 @@ public class hubXml {
 
     public static void main(String[] args) {
 
+        // Find posts to hubXml
+        String[] postsToHubXml = hubXmlPostFinder.findBlogPosts().toArray(new String[0]);
+        System.out.println("Building an XML file for " + postsToHubXml.length + " blog frogs");
+
         // Build XML Setup
         hubXmlBuilders.buildXmlSetup();
 
-        System.out.println("Building an XML file for " + hubXmlSelectors.POSTS.length + " posts");
-
-        for (int i=0; i< hubXmlSelectors.POSTS.length; i++) {
+        for (int i=0; i< postsToHubXml.length; i++) {
 
             if (i % 10 == 0) {
-                System.out.println(i + "/" + hubXmlSelectors.POSTS.length);
+                System.out.println(i + "/" + postsToHubXml.length + " blog frogs");
             }
 
             // Build <items>
-            hubXmlBuilders.buildItem(hubXmlSelectors.POSTS[i], i);
+            hubXmlBuilders.buildItem(postsToHubXml[i], i);
 
         }
 
@@ -34,13 +36,11 @@ public class hubXml {
         hubXmlBuilders.document.setContent(hubXmlBuilders.rss);
 
         try {
-
             // Build blog.xml
             FileWriter writer = new FileWriter("blog.xml");
             XMLOutputter outputter = new XMLOutputter();
             outputter.setFormat(Format.getPrettyFormat());
             outputter.output(hubXmlBuilders.document, writer);
-            // outputter.output(hubXmlBuilders.document, System.out);
 
         } catch (Exception e) {
 

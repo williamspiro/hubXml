@@ -15,7 +15,7 @@ import java.util.List;
 
 class hubXmlBuilders {
 
-    private static final String USER_AGENT = "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/45.0.2454.101 Safari/537.36";
+    static final String USER_AGENT = "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/45.0.2454.101 Safari/537.36";
     private static final String DATE_CLEANER_PATTERN = "(?i)[a-zA-Z]+\\b(?<!\\b(january)|(jan)|(february)|(feb)|(march)|(mar)|(april)|(apr)|(may)|(june)|(jun)|(july)|(jul)|(august)|(aug)|(september)|(sep)|(october)|(oct)|(november)|(nov)|(december)|(dec))";
 
     // XML Setup
