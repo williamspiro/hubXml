@@ -17,7 +17,7 @@ class hubXmlSelectors {
     static final String TAGS_SELECTOR = ".topic-link";
     static final String POST_BODY_SELECTOR = ".post-body";
     // Optional Element to remove from the post body content (good to use when there is not a post body wrapper)
-    static final String[] POST_BODY_SELECTOR_REMOVER = {""};
+    static final String[] POST_BODY_SELECTOR_REMOVER = {".social-sharing",".post-body-cta"};
 
     // Optional elements for a given <item> no default value or error is logged
     static final String FEATURED_IMAGE_SELECTOR = ".featured-image img";
