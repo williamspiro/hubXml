@@ -10,6 +10,8 @@ Requires manually setting a few variables in `hubXmlSelectors.java` and soup sel
 ### __variables & soup selectors to set in hubXml/src/main/java/hubXmlSelectors.java__
 _Required Elements:_  
 `static final String[] POSTS` - An array of blog posts to turn into <item>(s) in the output xml file  
+NOTE: If the blog has a root URL pattern where posts are an extension of the root url, you can simply set the `static final String BLOG_ROOT_URL` selector, and post urls will be found from the sitemap. If you are not using this option, leave it a an empty string (""")  
+
 Below, find the _soup_ selectors which you need to set as CSS selectors for the elements to find. Included are examples of the html element selected --> XML conversion:  
 `static final String TITLE_SELECTOR = "title";` - Grabs the title of the post  
 ```
