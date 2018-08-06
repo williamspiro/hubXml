@@ -19,7 +19,7 @@ class hubXmlPostFinder {
                 String sitemapXml = Jsoup.connect(sitemapUri).userAgent(hubXmlBuilders.USER_AGENT).get().toString();
                 org.jsoup.nodes.Document sitemapXmlParser = Jsoup.parse(sitemapXml, "", Parser.xmlParser());
                 for (org.jsoup.nodes.Element e : sitemapXmlParser.select("loc")) {
-                    if (e.text().startsWith(hubXmlSelectors.BLOG_ROOT_URL) &&! e.text().equals(hubXmlSelectors.BLOG_ROOT_URL) &&! e.text().toLowerCase().matches("^.*?(author|tag|topic).*$")) {
+                    if (e.text().startsWith(hubXmlSelectors.BLOG_ROOT_URL) &&! e.text().equals(hubXmlSelectors.BLOG_ROOT_URL) &&! e.text().toLowerCase().matches("^.*?(author|tag|topic|category).*$")) {
                         postsToScrub.add(e.text());
                     }
                 }
