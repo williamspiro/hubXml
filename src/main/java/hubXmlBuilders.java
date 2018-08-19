@@ -125,11 +125,14 @@ class hubXmlBuilders {
             // Build <link>
             item.addContent(new Element("link").setText(post));
 
+            String EnVers = doc.select("ul.list-inline.text-right.links-header:first-child li:first-child a").get(0).attr("href");
+            org.jsoup.nodes.Document doc2 = Jsoup.connect(EnVers).userAgent(USER_AGENT).get();
+
             // Build <pubDate>
-            Elements date = doc.select(hubXmlSelectors.DATE_SELECTOR);
+            Elements date = doc2.select(hubXmlSelectors.DATE_SELECTOR);
             if (!date.isEmpty()) {
                 String dateString = date.get(0).text();
-                String fetchDate = dateString.replaceAll(DATE_CLEANER_PATTERN, "").replace(","," ").replace("-"," ").replace(" ","%20").replace("/","%2F");
+                String fetchDate = dateString.replaceAll(DATE_CLEANER_PATTERN, "").replace(","," ").replace("-"," ").replace(" ","%20").replace(".","%20").replace("/","%2F");
                 String finalPubDate =  getPubDate(fetchDate);
                 Element pubDate = new Element("pubDate").setText(finalPubDate);
                 item.addContent(pubDate);
@@ -199,14 +202,14 @@ class hubXmlBuilders {
                 // IF IMAGE SRC IS SRC ELEMENT OF IMG
                 String featuredImageUri = featuredImage.get(0).attr("src");
 
-                // IF IMAGE SRC IS CONTENT ATTRIBUTE OF META TAG (SELECTOR = meta[property=og:image])
+                // IF IMAGE SRC IS CONTENT ATTRIBUTE OF META TAG make SELECTOR "meta[property=og:image]"
                 // String featuredImageUri = featuredImage.get(0).attr("content");
 
-                // IF IMAGE SRC IS IN INLINE CSS OF ELEMENT, USE BELOW INSTEAD. MAKE SURE TO CHECK indexOfs values:
+                // IF IMAGE SRC IS IN INLINE CSS OF ELEMENT, USE BELOW INSTEAD. MAKE SURE TO CHECK indexOfs VALUES FOR SECURE/NOT-SECURE AND CSS DECLARATION DELIMITERS
                 // PROTOCOL OF IMAGE SRC | indexOf("https://") or indexOf("http://")
-                // BACKGROUND URL SYNTAX | indexOf("')") OR indexOf(")")
+                // BACKGROUND URL SYNTAX | indexOf("')") OR indexOf(")") OR indexOf("\")")
                 // String featuredImageStyle = featuredImage.attr("style");
-                // String featuredImageUri =  featuredImageStyle.substring(featuredImageStyle.indexOf("https://"), featuredImageStyle.indexOf("')"));
+                // String featuredImageUri =  featuredImageStyle.substring(featuredImageStyle.indexOf("https://"), featuredImageStyle.indexOf("\")"));
 
                 Element postMeta = new Element ("post_meta", WP);
                 item.addContent(postMeta);
