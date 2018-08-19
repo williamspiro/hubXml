@@ -125,11 +125,8 @@ class hubXmlBuilders {
             // Build <link>
             item.addContent(new Element("link").setText(post));
 
-            String EnVers = doc.select("ul.list-inline.text-right.links-header:first-child li:first-child a").get(0).attr("href");
-            org.jsoup.nodes.Document doc2 = Jsoup.connect(EnVers).userAgent(USER_AGENT).get();
-
             // Build <pubDate>
-            Elements date = doc2.select(hubXmlSelectors.DATE_SELECTOR);
+            Elements date = doc.select(hubXmlSelectors.DATE_SELECTOR);
             if (!date.isEmpty()) {
                 String dateString = date.get(0).text();
                 String fetchDate = dateString.replaceAll(DATE_CLEANER_PATTERN, "").replace(","," ").replace("-"," ").replace(" ","%20").replace(".","%20").replace("/","%2F");
