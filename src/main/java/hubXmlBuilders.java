@@ -197,10 +197,10 @@ class hubXmlBuilders {
             if (!featuredImage.isEmpty()) {
 
                 // IF IMAGE SRC IS SRC ELEMENT OF IMG
-                String featuredImageUri = featuredImage.get(0).attr("src");
+                // String featuredImageUri = featuredImage.get(0).attr("src");
 
                 // IF IMAGE SRC IS CONTENT ATTRIBUTE OF META TAG make SELECTOR "meta[property=og:image]"
-                // String featuredImageUri = featuredImage.get(0).attr("content");
+                String featuredImageUri = featuredImage.get(0).attr("content");
 
                 // IF IMAGE SRC IS IN INLINE CSS OF ELEMENT, USE BELOW INSTEAD. MAKE SURE TO CHECK indexOfs VALUES FOR SECURE/NOT-SECURE AND CSS DECLARATION DELIMITERS
                 // PROTOCOL OF IMAGE SRC | indexOf("https://") or indexOf("http://")
@@ -253,7 +253,7 @@ class hubXmlBuilders {
             if (hubXmlSelectors.POST_BODY_SELECTOR_REMOVER[0].length() != 0) {
                 for (String remover : hubXmlSelectors.POST_BODY_SELECTOR_REMOVER) {
                     try {
-                        doc.select(remover).get(0).remove();
+                        doc.select(remover).remove();
                     } catch (Exception e) {
                         System.out.println("Unable to find element " + remover + " from the post body of " + post);
                     }
