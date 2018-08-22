@@ -1,5 +1,6 @@
 import org.jsoup.Jsoup;
 import org.jsoup.parser.Parser;
+import org.jsoup.select.Elements;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -7,10 +8,42 @@ import java.util.List;
 
 class hubXmlPostFinder {
 
+    private static List<String> postsToScrub = new ArrayList<String>();
+
+    private static void paginateAndGrabPosts(String listingUri){
+
+        try {
+
+            org.jsoup.nodes.Document listing = Jsoup.connect(listingUri).get();
+            Elements listingLinks = listing.select(hubXmlSelectors.BLOG_LISTING_LINKS_SELECTOR);
+            if (!listingLinks.isEmpty()) {
+                for (org.jsoup.nodes.Element listingLink : listingLinks) {
+                    if (listingLink.toString().contains("http")) {
+                        postsToScrub.add(listingLink.attr("href"));
+                    } else {
+                        postsToScrub.add(hubXmlSelectors.BLOG_LISTING_URL.split("(?<!/)/(?!/)")[0] + listingLink.attr("href"));
+                    }
+                }
+            }
+            Elements nextPage = listing.select(hubXmlSelectors.BLOG_LISTING_PAGINATOR);
+            if (!nextPage.isEmpty()) {
+                if (nextPage.toString().contains("http")) {
+                    paginateAndGrabPosts(nextPage.attr("href"));
+                } else {
+                    paginateAndGrabPosts(hubXmlSelectors.BLOG_LISTING_URL.split("(?<!/)/(?!/)")[0] + nextPage.attr("href"));
+                }
+            }
+
+        } catch (Exception e) {
+
+            System.out.println("Whoops");
+
+        }
+    }
+
     static List<String> findBlogPosts() {
 
-        List<String> postsToScrub = new ArrayList<String>();
-        String sitemapUri = hubXmlSelectors.BLOG_ROOT_URL.split("(?<!/)/(?!/)")[0] + "/sitemap.xml";
+        String sitemapUri = hubXmlSelectors.BLOG_ROOT_URL.split("(?<!/)/(?!/)")[0] + "/post-sitemap.xml";
 
         if (hubXmlSelectors.BLOG_ROOT_URL.length() != 0) {
 
@@ -30,6 +63,10 @@ class hubXmlPostFinder {
                 System.out.println("Failed to find posts from sitemap " + sitemapUri + "Set BLOG_ROOT_URL to be an empty string(\"\") and manually set POSTS array");
 
             }
+
+        } else if (hubXmlSelectors.BLOG_LISTING_URL.length() != 0) {
+
+            paginateAndGrabPosts(hubXmlSelectors.BLOG_LISTING_URL);
 
         } else {
 
