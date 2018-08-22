@@ -9,8 +9,10 @@ Requires manually setting a few variables in `hubXmlSelectors.java` and soup sel
 
 ### __variables & soup selectors to set in hubXml/src/main/java/hubXmlSelectors.java__
 _Required Elements:_  
-`static final String[] POSTS` - An array of blog posts to turn into <item>(s) in the output xml file  
-NOTE: If the blog has a root URL pattern where posts are an extension of the root url, you can simply set the `static final String BLOG_ROOT_URL` selector, and post urls will be found from the sitemap. If you are not using this option, leave it a an empty string (""")  
+There are 3 options for telling hubXml which posts to scrub. Sitemap, listing pagination, and manual listing (order of how easy). Leave the 2 non-used post finding options selectors as empty strings `"""`    
+1. SITEMAP - finds posts from sitemaps based on a blog root URL and sitemap. Requires that a site has a sitemap and the posts follow a root url + extension pattern. Ex. `www.blog.com/blog-root-url/post-slug` will find all URLS in the sitemap with `www.blog.com/blog-root-url/<slug>` structure. If using this option, set `BLOG_ROOT_URL`  
+2. LISTING PAGINATION - finds posts by jumping through paginated listing pages grabbing post URLs. Requires paginated listing pages with the post URLs. If using this option set `BLOG_LISTING_URL`, `BLOG_LISTING_LINKS_SELECTOR` & `BLOG_LISTING_PAGINATOR`  
+3. MANUAL LISTING - requires manually setting the `POSTS` array with the posts for hubXml to scrub  
 
 Below, find the _soup_ selectors which you need to set as CSS selectors for the elements to find. Included are examples of the html element selected --> XML conversion:  
 `static final String TITLE_SELECTOR = "title";` - Grabs the title of the post  
