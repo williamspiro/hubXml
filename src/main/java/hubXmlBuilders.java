@@ -216,12 +216,6 @@ class hubXmlBuilders {
             if (!featuredImage.isEmpty()) {
 
                 String featuredImageUri = metaOrSrcOrInlineFeaturedImage(featuredImage);
-                // IF IMAGE SRC IS IN INLINE CSS OF ELEMENT, USE BELOW INSTEAD. MAKE SURE TO CHECK indexOfs VALUES FOR SECURE/NOT-SECURE AND CSS DECLARATION DELIMITERS
-                // PROTOCOL OF IMAGE SRC | indexOf("https://") or indexOf("http://")
-                // BACKGROUND URL SYNTAX | indexOf("')") OR indexOf(")") OR indexOf("\")")
-                // String featuredImageStyle = featuredImage.attr("style");
-                // String featuredImageUri =  featuredImageStyle.substring(featuredImageStyle.indexOf("https://"), featuredImageStyle.indexOf("\")"));
-
                 Element postMeta = new Element ("post_meta", WP);
                 item.addContent(postMeta);
                 postMeta.addContent(new Element ("meta_key", WP).setText("_thumbnail_id"));
