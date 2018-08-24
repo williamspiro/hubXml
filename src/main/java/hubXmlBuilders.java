@@ -102,6 +102,25 @@ class hubXmlBuilders {
 
     }
 
+    private static String metaOrSrcOrInlineFeaturedImage(Elements featuredImage) {
+
+        if (hubXmlSelectors.FEATURED_IMAGE_SELECTOR.contains("meta")) {
+
+            return featuredImage.get(0).attr("content");
+
+        } else if (featuredImage.get(0).attr("src").length() > 0){
+
+            return featuredImage.get(0).attr("src");
+
+        } else {
+
+            String featuredImageStyle = featuredImage.attr("style");
+            return featuredImageStyle.split("//")[1].split("'\\)|\\)|\"\\)")[0];
+
+        }
+
+    }
+
     static void buildItem(String post, Integer id) {
 
         try {
@@ -196,12 +215,7 @@ class hubXmlBuilders {
             Elements featuredImage = doc.select(hubXmlSelectors.FEATURED_IMAGE_SELECTOR);
             if (!featuredImage.isEmpty()) {
 
-                // IF IMAGE SRC IS SRC ELEMENT OF IMG
-                String featuredImageUri = featuredImage.get(0).attr("src");
-
-                // IF IMAGE SRC IS CONTENT ATTRIBUTE OF META TAG make SELECTOR "meta[property=og:image]"
-                // String featuredImageUri = featuredImage.get(0).attr("content");
-
+                String featuredImageUri = metaOrSrcOrInlineFeaturedImage(featuredImage);
                 // IF IMAGE SRC IS IN INLINE CSS OF ELEMENT, USE BELOW INSTEAD. MAKE SURE TO CHECK indexOfs VALUES FOR SECURE/NOT-SECURE AND CSS DECLARATION DELIMITERS
                 // PROTOCOL OF IMAGE SRC | indexOf("https://") or indexOf("http://")
                 // BACKGROUND URL SYNTAX | indexOf("')") OR indexOf(")") OR indexOf("\")")
