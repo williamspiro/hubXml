@@ -59,7 +59,7 @@ CONVERTS TO >>>>>
 <content:encoded><![CDATA[<div class=".post-body">You must find <strong>inner peace</strong> to be an affective dragon warrior... and eat lost of dumplings</div>]]</content:encoded>
 ```
 _Optional Elements:_  
-`static final String FEATURED_IMAGE_SELECTOR = ".featured-image";` - Grabs the featured image of the post (NOTE: the image url must be in the html of the page as a `src` attribute of an `<img>` tag. It is also possible to grab inline `background` CSS declarations, but requires some modifications to the `String featuredImageUri` in `hubXml/src/main/java/hubXmlBuilders.java`,  a commented out example is in there)
+`static final String FEATURED_IMAGE_SELECTOR = ".featured-image";` - Grabs the featured image of the post. Will work for `src` attribute of image element, `content` attribute of meta element (like `meta[property="og:image"]`) or inline css `background`/`background-image` declarations  
 ```
 <img class="featured-image" src="https://www.kungfupanda.com/dumplings/featured-image.jpg">
 CONVERTS TO >>>>>
