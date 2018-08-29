@@ -13,7 +13,6 @@ class hubXmlPostFinder {
     private static void paginateAndGrabPosts(String listingUri){
 
         try {
-
             org.jsoup.nodes.Document listing = Jsoup.connect(listingUri).get();
             Elements listingLinks = listing.select(hubXmlSelectors.BLOG_LISTING_LINKS_SELECTOR);
             if (!listingLinks.isEmpty()) {
@@ -36,14 +35,14 @@ class hubXmlPostFinder {
 
         } catch (Exception e) {
 
-            System.out.println("Whoops");
+            System.out.println("Listing page link scrubbing borked :(");
 
         }
     }
 
     static List<String> findBlogPosts() {
 
-        String sitemapUri = hubXmlSelectors.BLOG_ROOT_URL.split("(?<!/)/(?!/)")[0] + "/post-sitemap.xml";
+        String sitemapUri = hubXmlSelectors.BLOG_ROOT_URL.split("(?<!/)/(?!/)")[0] + "/sitemap.xml";
 
         if (hubXmlSelectors.BLOG_ROOT_URL.length() != 0) {
 
