@@ -67,6 +67,8 @@ class hubXmlBuilders {
         featuredItem.addContent(new Element("post_type", WP).setText("attachment"));
         if (featuredImageUri.startsWith("http")) {
             featuredItem.addContent(new Element("attachment_url", WP).setText(featuredImageUri.split("[?]")[0]));
+        } else if (featuredImageUri.startsWith("//")) {
+            featuredItem.addContent(new Element("attachment_url", WP).setText("http:" + featuredImageUri.split("[?]")[0]));
         } else {
             featuredItem.addContent(new Element("attachment_url", WP).setText(post.split("(?<!/)/(?!/)")[0] + featuredImageUri.split("[?]")[0]));
         }
