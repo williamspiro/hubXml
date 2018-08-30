@@ -11,7 +11,7 @@ Requires manually setting a few variables in `hubXmlSelectors.java` and soup sel
 _Required Elements:_  
 There are 3 options for telling hubXml which posts to scrub. Sitemap, listing pagination, and manual listing (order of how easy). Leave the 2 non-used post finding options selectors as empty strings `"""`    
 1. SITEMAP - finds posts from sitemaps based on a blog root URL and sitemap. Requires that a site has a sitemap and the posts follow a root url + extension pattern. Ex. `www.blog.com/blog-root-url/post-slug` will find all URLS in the sitemap with `www.blog.com/blog-root-url/<slug>` structure. If using this option, set `BLOG_ROOT_URL`  
-2. LISTING PAGINATION - finds posts by jumping through paginated listing pages grabbing post URLs. Requires paginated listing pages with the post URLs. If using this option set `BLOG_LISTING_URL`, `BLOG_LISTING_LINKS_SELECTOR` & `BLOG_LISTING_PAGINATOR`  
+2. LISTING PAGINATION - finds posts by jumping through paginated listing pages grabbing post URLs. Requires paginated listing pages with the post URLs. If using this option set `BLOG_LISTING_URL`, `BLOG_LISTING_LINKS_SELECTOR` & `BLOG_LISTING_PAGINATOR`. NOTE: If your listing page is not paginated, and has all of your posts on one page, just set `BLOG_LISTING_PAGINATOR` to be `meep` so hubXml does not find a second page    
 3. MANUAL LISTING - requires manually setting the `POSTS` array with the posts for hubXml to scrub  
 
 Below, find the _soup_ selectors which you need to set as CSS selectors for the elements to find. Included are examples of the html element selected --> XML conversion:  
