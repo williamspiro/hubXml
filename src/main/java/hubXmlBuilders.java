@@ -117,7 +117,7 @@ class hubXmlBuilders {
         } else {
 
             String featuredImageStyle = featuredImage.attr("style");
-            return featuredImageStyle.split("//")[1].split("'\\)|\\)|\"\\)")[0];
+            return "http://" + featuredImageStyle.split("//")[1].split("'\\)|\\)|\"\\)")[0];
 
         }
 
