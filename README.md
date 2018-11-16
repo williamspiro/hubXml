@@ -123,7 +123,7 @@ __Example final output :tada:__
             <wp:status>publish</wp:status>
             <wp:post_type>post</wp:post_type>
             <excerpt:encoded><![CDATA[Becoming the dragon warrior you were always meant to be]]></excerpt:encoded>
-            <dc:creator>Author</dc:creator>
+            <dc:creator>Master Shifu</dc:creator>
             <category domain="category" nicename="Wuxi-Finger-Hold"><![CDATA[Wuxi Finger Hold]]></category>
             <content:encoded><![CDATA[<div>You must find <strong>inner peace</strong> to be an affective dragon warrior... and eat lost of dumplings</div>]]></content:encoded>
             <wp:post_meta>
