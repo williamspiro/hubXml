@@ -8,7 +8,8 @@ class hubXmlSelectors {
     // For the options you are not using, leave the selectors as empty strings ""
     // For full requirements of the 3 options, see README]
     //  1. SITEMAP - finds posts from sitemaps based on a blog root URL and sitemap
-    static final String BLOG_ROOT_URL = "https://www.kungfupanda.com/blog";
+    static final String BLOG_ROOT_URL = "https://pixarplanet.com/blog/";
+    static final String BLOG_SITEMAP_URL = "https://pixarplanet.com/blog/post-sitemap1.xml/";
 
     // 2. LISTING PAGINATION - jumps through paginated listing pages grabbing post links along the way
     static final String BLOG_LISTING_URL = "https://www.kungfupanda.com/blog";
@@ -23,7 +24,7 @@ class hubXmlSelectors {
     // Required Elements for a given <item> if an element is not found in a given post, a default value is set, and the error is logged
     // NEVER LEAVE A SELECTOR BLANK/EMPTY - JUST THROW IN SOMETHING RANDOM LIKE ".meep" if an element does not exist on a blog
     static final String TITLE_SELECTOR = "h1";
-    static final String DATE_SELECTOR = ".date";
+    static final String DATE_SELECTOR = ".post-date";
     static final String META_DESCRIPTION_SELECTOR = "meta[name=description]";
     static final String AUTHOR_SELECTOR = ".author-link a";
     static final String TAGS_SELECTOR = ".tags-link a";

@@ -1,7 +1,7 @@
+import java.io.FileWriter;
+
 import org.jdom2.output.Format;
 import org.jdom2.output.XMLOutputter;
-
-import java.io.FileWriter;
 
 // :)
 // SELECTORS ARE SET IN hubXmlSelectors.java
