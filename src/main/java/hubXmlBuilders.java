@@ -1,22 +1,29 @@
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.TimeZone;
+
 import org.jdom2.CDATA;
 import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.Namespace;
-
 import org.jsoup.Jsoup;
 import org.jsoup.select.Elements;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
+import com.joestelmach.natty.DateGroup;
+import com.joestelmach.natty.Parser;
 
 class hubXmlBuilders {
 
     static final String USER_AGENT = "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/45.0.2454.101 Safari/537.36";
     private static final String DATE_CLEANER_PATTERN = "(?i)[a-zA-Z]+\\b(?<!\\b(january)|(jan)|(february)|(feb)|(march)|(mar)|(april)|(apr)|(may)|(june)|(jun)|(july)|(jul)|(august)|(aug)|(september)|(sep)|(october)|(oct)|(november)|(nov)|(december)|(dec))";
+
+    private static final Parser DATE_PARSER = new Parser(TimeZone.getTimeZone("UTC"));
+
 
     // XML Setup
     private static final Namespace CONTENT_ENCODED = Namespace.getNamespace("content", "http://purl.org/rss/1.0/modules/content/");
@@ -79,27 +86,19 @@ class hubXmlBuilders {
     private static String getPubDate(String fetchUriDate) {
 
         try {
-
-            URL obj = new URL("http://www.convert-unix-time.com/api?format=rfc1123&date=" + fetchUriDate);
-            HttpURLConnection con = (HttpURLConnection) obj.openConnection();
-            con.setRequestMethod("GET");
-            con.setRequestProperty("User-Agent", USER_AGENT);
-            BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
-            String inputLine;
-            StringBuilder response = new StringBuilder();
-            while ((inputLine = in.readLine()) != null) {
-                response.append(inputLine);
+            DateGroup dateGroup = DATE_PARSER.parse(fetchUriDate).get(0);
+            if (dateGroup == null || dateGroup.getDates().isEmpty()) {
+                return "Wed, 25 Apr 2018 13:19:35 +0000";
             }
-            in.close();
+            Date date = dateGroup.getDates().get(0);
+            ZonedDateTime dateTime = ZonedDateTime.ofInstant(Instant.ofEpochMilli(date.getTime()), ZoneId.of("UTC"));
 
-            String responseString = response.toString();
-            return responseString.split("\"utcDate\":\"")[1].split("\"")[0];
+            String dateString = dateTime.format(DateTimeFormatter.RFC_1123_DATE_TIME);
+            return dateString.substring(0, dateString.length() - 3) + "+0000";
 
         } catch (Exception e) {
-
-            System.out.println("Found date, having convert-unix-time.com/api issues");
+            System.out.println("Found date, having parsing issues");
             return "Wed, 25 Apr 2018 13:19:35 +0000";
-
         }
 
     }
@@ -150,7 +149,7 @@ class hubXmlBuilders {
             Elements date = doc.select(hubXmlSelectors.DATE_SELECTOR);
             if (!date.isEmpty()) {
                 String dateString = date.get(0).text();
-                String fetchDate = dateString.replaceAll(DATE_CLEANER_PATTERN, "").replace(","," ").replace("-"," ").replace(" ","%20").replace(".","%20").replace("/","%2F");
+                String fetchDate = dateString.replaceAll(DATE_CLEANER_PATTERN, "").replace(",", " ").replace("-", " ").replace(".", " ");
                 String finalPubDate =  getPubDate(fetchDate);
                 Element pubDate = new Element("pubDate").setText(finalPubDate);
                 item.addContent(pubDate);
