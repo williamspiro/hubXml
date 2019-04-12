@@ -1,10 +1,10 @@
-import org.jsoup.Jsoup;
-import org.jsoup.parser.Parser;
-import org.jsoup.select.Elements;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import org.jsoup.Jsoup;
+import org.jsoup.parser.Parser;
+import org.jsoup.select.Elements;
 
 class hubXmlPostFinder {
 
@@ -41,16 +41,16 @@ class hubXmlPostFinder {
     }
 
     static List<String> findBlogPosts() {
+        if (hubXmlSelectors.BLOG_SITEMAP_URL.length() != 0 || hubXmlSelectors.BLOG_ROOT_URL.length() != 0) {
 
-        String sitemapUri = hubXmlSelectors.BLOG_ROOT_URL.split("(?<!/)/(?!/)")[0] + "/sitemap.xml";
-
-        if (hubXmlSelectors.BLOG_ROOT_URL.length() != 0) {
+            String sitemapUri = (hubXmlSelectors.BLOG_SITEMAP_URL.length() != 0) ? hubXmlSelectors.BLOG_SITEMAP_URL : hubXmlSelectors.BLOG_ROOT_URL.split("(?<!/)/(?!/)")[0] + "/sitemap.xml";
 
             try {
 
                 String sitemapXml = Jsoup.connect(sitemapUri).userAgent(hubXmlBuilders.USER_AGENT).get().toString();
                 org.jsoup.nodes.Document sitemapXmlParser = Jsoup.parse(sitemapXml, "", Parser.xmlParser());
-                for (org.jsoup.nodes.Element e : sitemapXmlParser.select("loc")) {
+                Elements elements = sitemapXmlParser.select("loc");
+                for (org.jsoup.nodes.Element e : elements) {
                     if (e.text().contains(hubXmlSelectors.BLOG_ROOT_URL) &&! e.text().equals(hubXmlSelectors.BLOG_ROOT_URL) &&! e.text().toLowerCase().matches("^.*?(author|tag|topic|category).*$")) {
                         postsToScrub.add(e.text());
                     }
