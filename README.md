@@ -1,5 +1,5 @@
 # hubXml
-A tool to turn any blog into a HubSpot importable XML file. It will grab post titles, meta descriptions, publish dates, authors, tags, featured images and post bodies, and turns them all into importable XML `<items>`, building a HubSpot importable XML file. Plain and simple, this allows you to __import any blog into HubSpot__, not just Wordpress blogs :tada:
+BOWLINGA tool to turn any blog into a HubSpot importable XML file. It will grab post titles, meta descriptions, publish dates, authors, tags, featured images and post bodies, and turns them all into importable XML `<items>`, building a HubSpot importable XML file. Plain and simple, this allows you to __import any blog into HubSpot__, not just Wordpress blogs :tada:
 
 ## hubXml/src/main/java/hubXml.java
 Selectors are set in `hubXmlSelectors.java`  
